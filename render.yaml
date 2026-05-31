@@ -1,16 +1,6 @@
-# ============================================================
-# 🚀 Render Blueprint — Fisher El Hotel ERP Suite
-# ============================================================
-# INSTRUCTIONS:
-#   1. Push this file to the root of your GitHub repository.
-#   2. Go to Render.com -> New+ -> Blueprint -> connect your repo.
-#   3. Render will automatically create all services below.
-# ============================================================
 
 services:
-  # =========================================================================
-  # 1. UNIFIED MySQL DATABASE (Private — not publicly accessible)
-  # =========================================================================
+
   - type: pserv
     name: fe-mysql-db
     plan: free
@@ -22,12 +12,7 @@ services:
         value: rootpassword
       - key: MYSQL_DATABASE
         value: fe_hotel_db
-    # NOTE: Free tier has NO persistent disk.
-    # Data resets if the service restarts. For persistent storage, upgrade to a paid plan.
 
-  # =========================================================================
-  # 2. AUTH MICROSERVICE
-  # =========================================================================
   - type: pserv
     name: fe-auth-service
     plan: free
@@ -56,9 +41,7 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  # =========================================================================
-  # 3. BOOKING MICROSERVICE
-  # =========================================================================
+
   - type: pserv
     name: fe-booking-service
     plan: free
@@ -89,9 +72,7 @@ services:
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
 
-  # =========================================================================
-  # 4. HOUSEKEEPING MICROSERVICE
-  # =========================================================================
+
   - type: pserv
     name: fe-housekeeping-service
     plan: free
@@ -122,9 +103,7 @@ services:
       - key: BOOKING_SERVICE_URL
         value: http://fe-booking-service
 
-  # =========================================================================
-  # 5. FINANCE MICROSERVICE
-  # =========================================================================
+
   - type: pserv
     name: fe-finance-service
     plan: free
@@ -153,9 +132,7 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  # =========================================================================
-  # 6. API GATEWAY (Nginx Router — the only publicly accessible backend)
-  # =========================================================================
+
   - type: web
     name: fe-api-gateway
     plan: free
@@ -163,13 +140,11 @@ services:
     dockerfilePath: api-gateway/Dockerfile
     dockerContext: api-gateway
 
-  # =========================================================================
-  # 7. FRONTEND STATIC PORTAL
-  # =========================================================================
+
   services:
-  - type: web          #  Must always be 'web' for websites or APIs
-    runtime: static    #  This is where you specify it's a static site!
+  - type: web          
+    runtime: static    
     name: frontend-dashboard
     env: static
-    buildCommand: ""   # Leave empty or add build script if using a framework
+    buildCommand: ""   
     publishDir: "."
