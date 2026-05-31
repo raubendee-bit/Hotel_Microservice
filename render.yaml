@@ -11,7 +11,7 @@ services:
   - type: pserv
     name: fe-mysql-db
     env: docker
-    dockerfile: Dockerfile
+    dockerfilePath: 8.0/Dockerfile
     # We use an inline docker command or custom setup if needed, 
     # but official mysql:8.0 works perfectly as a Private Service.
     repo: https://github.com/docker-library/mysql
