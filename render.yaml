@@ -137,22 +137,18 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  # =========================================================================
-  # 3. API GATEWAY ROUTER
-  # =========================================================================
-  - type: web
-    name: fe-api-gateway
-    env: docker
-    dockerfilePath: api-gateway/Dockerfile
-    ports:
-      - port: 80
-        protocol: tcp
+# =======================================================================
+# 3. API GATEWAY ROUTER
+# =======================================================================
+- type: web
+  name: fe-api-gateway
+  env: docker
+  dockerfilePath: api-gateway/Dockerfile
 
-  # =========================================================================
-  # 4. FRONTEND STATIC PORTAL
-  # =========================================================================
-  - type: web
-    runtime: static
-    name: fe-frontend
-    env: static
-    publishDir: .
+# =======================================================================
+# 4. FRONTEND STATIC PORTAL
+# =======================================================================
+- type: web
+  runtime: static
+  name: fe-frontend
+  publishPath: .
