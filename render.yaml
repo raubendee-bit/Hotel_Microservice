@@ -5,9 +5,6 @@
 # spin up the frontend, backend microservices, Nginx API Gateway, and database.
 
 services:
-  # =========================================================================
-  # 1. UNIFIED DATABASE (Consolidated to save memory and stay under Free tier)
-  # =========================================================================
   - type: pserv
     name: fe-mysql-db
     env: docker
