@@ -156,9 +156,10 @@ services:
     dockerContext: api-gateway
 
   # =========================================================================
-  # 6. FRONTEND STATIC PORTAL (Correct Blueprint mapping for static deployments)
+  # 6. FRONTEND STATIC PORTAL
   # =========================================================================
-  - type: static_site
+  - type: web
     name: fe-frontend
+    runtime: static
     buildCommand: ""
     staticPublishPath: .
