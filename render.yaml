@@ -1,11 +1,22 @@
+# ============================================================
+# 🚀 Render Blueprint — Fisher El Hotel ERP Suite (100% FREE)
+# ============================================================
+# INSTRUCTIONS:
+#   1. Push this file to the root of your GitHub repository.
+#   2. Go to Render.com -> New+ -> Blueprint -> connect your repo.
+#   3. Render will automatically create all services below.
+# ============================================================
+
 services:
-  # =======================================================================
-  # 1. BACKEND MICROSERVICES
-  # =======================================================================
+  # =========================================================================
+  # 1. AUTH MICROSERVICE
+  # =========================================================================
   - type: web
     name: fe-auth-service
+    plan: free
     env: docker
     dockerfilePath: services/auth-service/Dockerfile
+    dockerContext: services/auth-service
     envVars:
       - key: APP_ENV
         value: production
@@ -16,7 +27,7 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com  # 👈 Replace with your free cloud database host
+        value: your-free-db-hostname.com  # 👈 Connect your external free cloud DB here
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
@@ -28,10 +39,15 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
+  # =========================================================================
+  # 2. BOOKING MICROSERVICE
+  # =========================================================================
   - type: web
     name: fe-booking-service
+    plan: free
     env: docker
     dockerfilePath: services/booking-service/Dockerfile
+    dockerContext: services/booking-service
     envVars:
       - key: APP_ENV
         value: production
@@ -56,10 +72,15 @@ services:
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
 
+  # =========================================================================
+  # 3. HOUSEKEEPING MICROSERVICE
+  # =========================================================================
   - type: web
     name: fe-housekeeping-service
+    plan: free
     env: docker
     dockerfilePath: services/housekeeping-service/Dockerfile
+    dockerContext: services/housekeeping-service
     envVars:
       - key: APP_ENV
         value: production
@@ -69,59 +90,4 @@ services:
         value: "false"
       - key: DB_CONNECTION
         value: mysql
-      - key: DB_HOST
-        value: your-free-db-hostname.com
-      - key: DB_PORT
-        value: "3306"
-      - key: DB_DATABASE
-        value: fe_hotel_db
-      - key: DB_USERNAME
-        value: your_db_user
-      - key: DB_PASSWORD
-        value: your_db_password
-      - key: JWT_SECRET
-        value: fisherel_jwt_secret_key_extremely_secure_key_12345
-      - key: BOOKING_SERVICE_URL
-        value: http://fe-booking-service
-
-  - type: web
-    name: fe-finance-service
-    env: docker
-    dockerfilePath: services/finance-service/Dockerfile
-    envVars:
-      - key: APP_ENV
-        value: production
-      - key: APP_KEY
-        value: base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=
-      - key: APP_DEBUG
-        value: "false"
-      - key: DB_CONNECTION
-        value: mysql
-      - key: DB_HOST
-        value: your-free-db-hostname.com
-      - key: DB_PORT
-        value: "3306"
-      - key: DB_DATABASE
-        value: fe_hotel_db
-      - key: DB_USERNAME
-        value: your_db_user
-      - key: DB_PASSWORD
-        value: your_db_password
-      - key: JWT_SECRET
-        value: fisherel_jwt_secret_key_extremely_secure_key_12345
-
-  # =======================================================================
-  # 2. API GATEWAY ROUTER
-  # =======================================================================
-  - type: web
-    name: fe-api-gateway
-    env: docker
-    dockerfilePath: api-gateway/Dockerfile
-
-  # =======================================================================
-  # 3. FRONTEND STATIC PORTAL
-  # =======================================================================
-  - type: web
-    runtime: static
-    name: fe-frontend
-    staticPublishPath: .
+      - key: DB
