@@ -166,7 +166,10 @@ services:
   # =========================================================================
   # 7. FRONTEND STATIC PORTAL
   # =========================================================================
-  - type: web
-    runtime: static
-    name: fe-frontend
-    staticPublishPath: .
+  services:
+  - type: web          #  Must always be 'web' for websites or APIs
+    runtime: static    #  This is where you specify it's a static site!
+    name: frontend-dashboard
+    env: static
+    buildCommand: ""   # Leave empty or add build script if using a framework
+    publishDir: "."
