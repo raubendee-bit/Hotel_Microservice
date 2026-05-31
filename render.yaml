@@ -71,7 +71,6 @@ services:
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
-
   # =========================================================================
   # 3. HOUSEKEEPING MICROSERVICE
   # =========================================================================
