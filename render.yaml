@@ -1,9 +1,3 @@
-# 🚀 Render Blueprint Specification for Fisher El Hotel ERP Suite
-#
-# This blueprint defines the entire multi-service stack on Render.
-# To deploy, connect your GitHub repository to Render and it will automatically
-# spin up the frontend, backend microservices, Nginx API Gateway, and database.
-
 services:
   - type: pserv
     name: fe-mysql-db
