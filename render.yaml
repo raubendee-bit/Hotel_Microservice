@@ -1,22 +1,21 @@
 services:
+  # =======================================================================
+  # 1. UNIFIED DATABASE (Using Docker Image to stay entirely Free)
+  # =======================================================================
   - type: pserv
     name: fe-mysql-db
-    env: docker
-    dockerfilePath: 8.0/Dockerfile
-    # We use an inline docker command or custom setup if needed, 
-    # but official mysql:8.0 works perfectly as a Private Service.
-    repo: https://github.com/docker-library/mysql
-    branch: master
+    env: image
+    image:
+      url: mysql:8.0
     envVars:
       - key: MYSQL_ROOT_PASSWORD
         value: rootpassword
       - key: MYSQL_DATABASE
-        value: fe_hotel_db # We can house all tables or schemas here
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 1 # Requires Render paid tier for persistent disk, otherwise data resets on restart.
+        value: fe_hotel_db
 
+  # =======================================================================
+  # 2. BACKEND MICROSERVICES
+  # =======================================================================
   - type: web
     name: fe-auth-service
     env: docker
@@ -124,12 +123,18 @@ services:
         value: rootpassword
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
-  
+
+  # =======================================================================
+  # 3. API GATEWAY ROUTER
+  # =======================================================================
   - type: web
     name: fe-api-gateway
     env: docker
     dockerfilePath: api-gateway/Dockerfile
-  
+
+  # =======================================================================
+  # 4. FRONTEND STATIC PORTAL
+  # =======================================================================
   - type: web
     runtime: static
     name: fe-frontend
