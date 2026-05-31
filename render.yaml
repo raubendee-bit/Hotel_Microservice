@@ -1,5 +1,6 @@
 # ============================================================
-# 🚀 Render Blueprint — Fisher El Hotel ERP Suite (100% FREE)
+# 🚀 Render Blueprint — Fisher El Hotel ERP Suite
+# Using Aiven MySQL as the persistent cloud database
 # ============================================================
 # INSTRUCTIONS:
 #   1. Push this file to the root of your GitHub repository.
@@ -9,9 +10,9 @@
 
 services:
   # =========================================================================
-  # 1. AUTH MICROSERVICE (services[0])
+  # 1. AUTH MICROSERVICE (Private — internal only)
   # =========================================================================
-  - type: web
+  - type: pserv
     name: fe-auth-service
     plan: free
     env: docker
@@ -27,22 +28,24 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com
+        value: fisherel-mysql-rauben-e651.l.aivencloud.com       # e.g. mysql-fisherel.aivencloud.com
       - key: DB_PORT
-        value: "3306"
+        value: "13010"     # e.g. 12345
       - key: DB_DATABASE
-        value: fe_hotel_db
+        value: defaultdb             # Aiven default database name
       - key: DB_USERNAME
-        value: your_db_user
+        value: avnadmin              # Aiven default username
       - key: DB_PASSWORD
-        value: your_db_password
+        value: AVNS_UVwkFI6wmgFkQKproEp   # from Aiven Overview tab
+      - key: MYSQL_ATTR_SSL_CA
+        value: /etc/ssl/certs/ca-certificates.crt  # Use system CA bundle for Aiven SSL
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
   # =========================================================================
-  # 2. BOOKING MICROSERVICE (services[1])
+  # 2. BOOKING MICROSERVICE (Private — internal only)
   # =========================================================================
-  - type: web
+  - type: pserv
     name: fe-booking-service
     plan: free
     env: docker
@@ -58,24 +61,26 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com
+        value: fisherel-mysql-rauben-e651.l.aivencloud.com
       - key: DB_PORT
-        value: "3306"
+        value: "13010"
       - key: DB_DATABASE
-        value: fe_hotel_db
+        value: defaultdb
       - key: DB_USERNAME
-        value: your_db_user
+        value: avnadmin
       - key: DB_PASSWORD
-        value: your_db_password
+        value: AVNS_UVwkFI6wmgFkQKproEp
+      - key: MYSQL_ATTR_SSL_CA
+        value: /etc/ssl/certs/ca-certificates.crt
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
 
   # =========================================================================
-  # 3. HOUSEKEEPING MICROSERVICE (services[2])
+  # 3. HOUSEKEEPING MICROSERVICE (Private — internal only)
   # =========================================================================
-  - type: web
+  - type: pserv
     name: fe-housekeeping-service
     plan: free
     env: docker
@@ -91,24 +96,26 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com
+        value: fisherel-mysql-rauben-e651.l.aivencloud.com
       - key: DB_PORT
-        value: "3306"
+        value: "13010"
       - key: DB_DATABASE
-        value: fe_hotel_db
+        value: defaultdb
       - key: DB_USERNAME
-        value: your_db_user
+        value: avnadmin
       - key: DB_PASSWORD
-        value: your_db_password
+        value: AVNS_UVwkFI6wmgFkQKproEp
+      - key: MYSQL_ATTR_SSL_CA
+        value: /etc/ssl/certs/ca-certificates.crt
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: BOOKING_SERVICE_URL
         value: http://fe-booking-service
 
   # =========================================================================
-  # 4. FINANCE MICROSERVICE (services[3])
+  # 4. FINANCE MICROSERVICE (Private — internal only)
   # =========================================================================
-  - type: web
+  - type: pserv
     name: fe-finance-service
     plan: free
     env: docker
@@ -124,21 +131,23 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com
+        value: fisherel-mysql-rauben-e651.l.aivencloud.com
       - key: DB_PORT
-        value: "3306"
+        value: "13010"
       - key: DB_DATABASE
-        value: fe_hotel_db
+        value: defaultdb
       - key: DB_USERNAME
-        value: your_db_user
+        value: avnadmin
       - key: DB_PASSWORD
-        value: your_db_password
+        value: AVNS_UVwkFI6wmgFkQKproEp
+      - key: MYSQL_ATTR_SSL_CA
+        value: /etc/ssl/certs/ca-certificates.crt
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  # =======================================================================
-  # 5. API GATEWAY ROUTER (services[4])
-  # =======================================================================
+  # =========================================================================
+  # 5. API GATEWAY (Nginx Router — publicly accessible)
+  # =========================================================================
   - type: web
     name: fe-api-gateway
     plan: free
@@ -146,10 +155,10 @@ services:
     dockerfilePath: api-gateway/Dockerfile
     dockerContext: api-gateway
 
-  # =======================================================================
-  # 6. FRONTEND STATIC PORTAL (services[5])
-  # =======================================================================
-  - type: web
-    runtime: static
+  # =========================================================================
+  # 6. FRONTEND STATIC PORTAL
+  # =========================================================================
+  - type: static
     name: fe-frontend
+    buildCommand: ""
     staticPublishPath: .
