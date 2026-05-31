@@ -133,4 +133,4 @@ services:
   - type: web
     runtime: static
     name: fe-frontend
-    publishPath: .
+    staticPublishPath: .
