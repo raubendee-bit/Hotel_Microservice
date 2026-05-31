@@ -1,6 +1,6 @@
 
 services:
-  - type: pserv
+- type: pserv
     name: fe-mysql-db
     plan: free
     env: docker
