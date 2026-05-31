@@ -1,25 +1,39 @@
+# ============================================================
+# 🚀 Render Blueprint — Fisher El Hotel ERP Suite
+# ============================================================
+# INSTRUCTIONS:
+#   1. Push this file to the root of your GitHub repository.
+#   2. Go to Render.com -> New+ -> Blueprint -> connect your repo.
+#   3. Render will automatically create all services below.
+# ============================================================
+
 services:
-  # =======================================================================
-  # 1. UNIFIED DATABASE (Changed to 'worker' to bypass the payment wall)
-  # =======================================================================
-  - type: worker       #  Changed from pserv to worker (FREE)
+  # =========================================================================
+  # 1. UNIFIED MySQL DATABASE (Private — not publicly accessible)
+  # =========================================================================
+  - type: pserv
     name: fe-mysql-db
-    env: image
+    plan: free
+    env: docker
     image:
-      url: mysql:8.0
+      url: docker.io/library/mysql:8.0
     envVars:
       - key: MYSQL_ROOT_PASSWORD
         value: rootpassword
       - key: MYSQL_DATABASE
         value: fe_hotel_db
+    # NOTE: Free tier has NO persistent disk.
+    # Data resets if the service restarts. For persistent storage, upgrade to a paid plan.
 
-  # =======================================================================
-  # 2. BACKEND MICROSERVICES
-  # =======================================================================
-  - type: web
+  # =========================================================================
+  # 2. AUTH MICROSERVICE
+  # =========================================================================
+  - type: pserv
     name: fe-auth-service
+    plan: free
     env: docker
     dockerfilePath: services/auth-service/Dockerfile
+    dockerContext: services/auth-service
     envVars:
       - key: APP_ENV
         value: production
@@ -42,10 +56,15 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  - type: web
+  # =========================================================================
+  # 3. BOOKING MICROSERVICE
+  # =========================================================================
+  - type: pserv
     name: fe-booking-service
+    plan: free
     env: docker
     dockerfilePath: services/booking-service/Dockerfile
+    dockerContext: services/booking-service
     envVars:
       - key: APP_ENV
         value: production
@@ -70,10 +89,15 @@ services:
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
 
-  - type: web
+  # =========================================================================
+  # 4. HOUSEKEEPING MICROSERVICE
+  # =========================================================================
+  - type: pserv
     name: fe-housekeeping-service
+    plan: free
     env: docker
     dockerfilePath: services/housekeeping-service/Dockerfile
+    dockerContext: services/housekeeping-service
     envVars:
       - key: APP_ENV
         value: production
@@ -98,10 +122,15 @@ services:
       - key: BOOKING_SERVICE_URL
         value: http://fe-booking-service
 
-  - type: web
+  # =========================================================================
+  # 5. FINANCE MICROSERVICE
+  # =========================================================================
+  - type: pserv
     name: fe-finance-service
+    plan: free
     env: docker
     dockerfilePath: services/finance-service/Dockerfile
+    dockerContext: services/finance-service
     envVars:
       - key: APP_ENV
         value: production
@@ -124,18 +153,20 @@ services:
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-  # =======================================================================
-  # 3. API GATEWAY ROUTER
-  # =======================================================================
+  # =========================================================================
+  # 6. API GATEWAY (Nginx Router — the only publicly accessible backend)
+  # =========================================================================
   - type: web
     name: fe-api-gateway
+    plan: free
     env: docker
     dockerfilePath: api-gateway/Dockerfile
+    dockerContext: api-gateway
 
-  # =======================================================================
-  # 4. FRONTEND STATIC PORTAL
-  # =======================================================================
-  - type: web
-    runtime: static
+  # =========================================================================
+  # 7. FRONTEND STATIC PORTAL
+  # =========================================================================
+  - type: static
     name: fe-frontend
+    buildCommand: ""
     staticPublishPath: .
