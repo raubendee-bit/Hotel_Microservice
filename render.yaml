@@ -158,7 +158,7 @@ services:
   # =========================================================================
   # 6. FRONTEND STATIC PORTAL
   # =========================================================================
-  - type: static
+  - type: web
     name: fe-frontend
     buildCommand: ""
     staticPublishPath: .
