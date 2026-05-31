@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fisher El Hotel - Luxury Guest Portal</title>
+    <!-- Modern Luxury Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #0b0d17;
+            --bg-surface: rgba(22, 28, 45, 0.6);
+            --bg-surface-solid: #161c2d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --gradient-gold: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #f3e5ab 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #e2c974;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #06b6d4;
+            --glass-border: rgba(212, 175, 55, 0.15);
+            --shadow-gold: 0 8px 32px 0 rgba(212, 175, 55, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272f44;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-gold);
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(212, 175, 55, 0.12);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, .brand-title {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            padding-bottom: 10px;
+        }
+
+        /* Luxury Header & Navigation */
+        header {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-crown {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+        }
+
+        .brand-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        .logout-btn-hud {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn-hud:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Container Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Dynamic Status HUD */
+        .status-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 24px;
+            background: rgba(22, 28, 45, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            border-radius: 50px;
+            background: var(--gradient-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b0d17;
+            font-weight: 700;
+        }
+
+        /* Inputs & Controls */
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control, select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Premium Buttons */
+        .btn-luxury {
+            background: var(--gradient-gold);
+            color: #0b0d17;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+            background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 100%);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Table Design */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(39, 47, 68, 0.6);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Room Style Cards Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .room-card {
+            background: rgba(22, 28, 45, 0.45);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .room-image-stub {
+            height: 180px;
+            background: linear-gradient(45deg, #161c2d 0%, #272f44 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent-gold);
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .room-price-tag {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(11, 13, 23, 0.9);
+            border: 1px solid var(--accent-gold);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-gold);
+        }
+
+        .room-card-body {
+            padding: 20px;
+        }
+
+        .room-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .badge-available { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-occupied { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-dirty { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-maintenance { background: rgba(6, 182, 212, 0.15); color: var(--color-info); border: 1px solid rgba(6, 182, 212, 0.3); }
+        .badge-reserved { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        .room-card-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .room-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Alert Pill Status */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 4px 12px;
+        }
+
+        /* Invoice Modal receipt styles */
+        .invoice-receipt {
+            font-family: 'Outfit', sans-serif;
+            background: #111522;
+            border: 1px dashed var(--accent-gold);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--text-gold);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .receipt-total {
+            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-gold);
+        }
+
+        /* Toast Alert Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 13, 23, 0.95);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        .toast-notification.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+        }
+
+        /* Dialog Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 13, 23, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--bg-surface-solid);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: var(--shadow-gold);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+    </style>
+    <script>
+        // Secure Auth Guard Check
+        if (localStorage.getItem('fe_auth_role') !== 'guest') {
+            window.location.href = './index.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Dynamic Luxury Header -->
+    <header>
+        <div class="logo-area" onclick="window.location.href = './index.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-crown logo-crown"></i>
+            <div>
+                <div class="brand-title">Fisher El Hotel</div>
+                <div class="brand-subtitle">Guest Portal Space</div>
+            </div>
+        </div>
+
+        <!-- Connection toggle & logout buttons -->
+        <div style="display: flex; gap: 15px; align-items: center;">
+
+            <button class="logout-btn-hud" onclick="performLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- Master Container -->
+    <div class="main-container">
+
+        <!-- Status HUD bar -->
+        <div class="status-hud">
+            <div class="user-pill">
+                <div class="avatar-ring" id="userAvatar">G</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.95rem;" id="userProfileName">VIP Guest Account</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);" id="userRoleSub">Guest • guest@fisherel.com</div>
+                </div>
+            </div>
+            <div>
+                <span class="status-pill badge-available" id="jwtStatusText"><i class="fa-solid fa-key"></i> Shared JWT Encoded</span>
+            </div>
+        </div>
+
+        <!-- 1. RESERVATION CONTROL -->
+        <h2><i class="fa-solid fa-calendar-check"></i> Luxury Suite Reservation</h2>
+        
+        <div class="glass-card" style="margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+                <div class="input-group">
+                    <label><i class="fa-regular fa-calendar-days"></i> Check-In Date</label>
+                    <input type="date" id="guestCheckIn" class="form-control" value="2026-05-29">
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-regular fa-calendar-days"></i> Check-Out Date</label>
+                    <input type="date" id="guestCheckOut" class="form-control" value="2026-06-01">
+                </div>
+                <div class="input-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn-luxury" style="width: 100%;" onclick="refreshRoomAvailability()">
+                        <i class="fa-solid fa-search"></i> Check Availability
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ROOM GRIDS -->
+        <h3>Available Premium Chambers</h3>
+        <div class="rooms-grid" id="guestRoomsGrid">
+            <!-- Dynamically Populated -->
+        </div>
+
+        <!-- 3. GUEST BOOKINGS LIST -->
+        <div style="margin-top: 40px;">
+            <h3>My Royal Stays</h3>
+            <div class="glass-card" style="margin-top: 20px; padding: 0;">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Chamber</th>
+                                <th>Style</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Grand Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestBookingsTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Receipt Invoice View Modal -->
+    <div class="modal-overlay" id="invoiceModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('invoiceModal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar"></i> Royal Invoicing Statement</h3>
+            
+            <div id="invoiceModalContent">
+                <!-- Dynamically Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast alert HUD -->
+    <div class="toast-notification" id="toastHUD">
+        <i class="fa-solid fa-envelope-open-text toast-icon"></i>
+        <div>
+            <div style="font-weight: 600; color: var(--accent-gold);" id="toastTitle">System Notification</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);" id="toastMsg">Booking confirmation details dispatched.</div>
+        </div>
+    </div>
+
+    <script>
+        // Core State
+        let isMicroservices = false;
+        const token = localStorage.getItem('fe_auth_token');
+        
+        // Mock DB storage
+        let mockRooms = [];
+        let mockBookings = [];
+        let mockInvoices = [];
+
+        // Boot loader
+        window.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                isMicroservices = true;
+            }
+            updateSessionHUD();
+            initializeDateInputs();
+            refreshAllViews();
+        });
+
+        // Initialize check-in and check-out dates dynamically (today and a 3-night stay)
+        function initializeDateInputs() {
+            const checkInInput = document.getElementById('guestCheckIn');
+            const checkOutInput = document.getElementById('guestCheckOut');
+            
+            if (checkInInput && checkOutInput) {
+                const today = new Date();
+                const departure = new Date();
+                departure.setDate(today.getDate() + 3); // 3 nights default
+                
+                const formatDate = (date) => {
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                };
+                
+                checkInInput.value = formatDate(today);
+                checkOutInput.value = formatDate(departure);
+                
+                // Restrict selection to current date or later
+                checkInInput.min = formatDate(today);
+                checkOutInput.min = formatDate(today);
+            }
+        }
+
+        // Update profile HUD from active session
+        function updateSessionHUD() {
+            const name = localStorage.getItem('fe_auth_name') || "Fisher El VIP Guest";
+            const email = localStorage.getItem('fe_auth_email') || "guest@fisherel.com";
+            
+            const profileNameEl = document.getElementById('userProfileName');
+            const roleSubEl = document.getElementById('userRoleSub');
+            const avatarEl = document.getElementById('userAvatar');
+            
+            if (profileNameEl) profileNameEl.textContent = name;
+            if (roleSubEl) roleSubEl.textContent = `Guest • ${email}`;
+            if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+        }
+
+        // Load DB from localStorage
+        function loadLocalMockDB() {
+            mockRooms = JSON.parse(localStorage.getItem('fe_mock_rooms')) || [];
+            mockBookings = JSON.parse(localStorage.getItem('fe_mock_bookings')) || [];
+            mockInvoices = JSON.parse(localStorage.getItem('fe_mock_invoices')) || [];
+        }
+
+        // Load DB from Live API Gateway
+        async function loadLiveMockDB() {
+            try {
+                // Fetch rooms from Live API
+                const roomsResponse = await fetch('http://localhost:8080/api/bookings/rooms', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!roomsResponse.ok) throw new Error('Failed to fetch rooms');
+                mockRooms = await roomsResponse.json();
+
+                // Fetch bookings from Live API
+                const bookingsResponse = await fetch('http://localhost:8080/api/bookings/bookings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
+                mockBookings = await bookingsResponse.json();
+
+                // Generate mock invoices list from live bookings
+                mockInvoices = [];
+                for (const b of mockBookings) {
+                    try {
+                        const invoiceResponse = await fetch(`http://localhost:8080/api/finance/invoices/booking/${b.id}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (invoiceResponse.ok) {
+                            const inv = await invoiceResponse.json();
+                            mockInvoices.push(inv);
+                        }
+                    } catch (e) {
+                        // Invoice might not exist yet, ignore
+                    }
+                }
+            } catch (error) {
+                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                isMicroservices = false;
+                updateConnectionBadge();
+                loadLocalMockDB();
+                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+            }
+        }
+
+        // Update connection status badge dynamically in the header HUD
+        function updateConnectionBadge() {
+            const container = document.getElementById('jwtStatusText').parentNode;
+            container.innerHTML = '';
+            
+            // JWT Badge
+            const jwtBadge = document.createElement('span');
+            jwtBadge.className = 'status-pill badge-available';
+            jwtBadge.id = 'jwtStatusText';
+            jwtBadge.innerHTML = `<i class="fa-solid fa-key"></i> Shared JWT Encoded`;
+            container.appendChild(jwtBadge);
+
+            // Connection Badge
+            const connBadge = document.createElement('span');
+            connBadge.className = 'status-pill';
+            if (isMicroservices) {
+                connBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                connBadge.style.color = '#10b981';
+                connBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } else {
+                connBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                connBadge.style.color = '#f59e0b';
+                connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+            container.appendChild(connBadge);
+        }
+
+        // Save DB to localStorage (Simulation mode only)
+        function saveLocalMockDB() {
+            localStorage.setItem('fe_mock_rooms', JSON.stringify(mockRooms));
+            localStorage.setItem('fe_mock_bookings', JSON.stringify(mockBookings));
+            localStorage.setItem('fe_mock_invoices', JSON.stringify(mockInvoices));
+        }
+
+        // Switch actor roles or logouts
+        function performLogout() {
+            localStorage.removeItem('fe_auth_role');
+            localStorage.removeItem('fe_auth_token');
+            localStorage.removeItem('fe_auth_email');
+            localStorage.removeItem('fe_auth_name');
+            window.location.href = './index.html';
+        }
+
+        // Toast alert HUD helper
+        function showToast(title, message) {
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = message;
+            const toast = document.getElementById('toastHUD');
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 4000);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        async function refreshAllViews() {
+            updateConnectionBadge();
+            if (isMicroservices) {
+                await loadLiveMockDB();
+            } else {
+                loadLocalMockDB();
+            }
+            refreshRoomAvailability();
+            renderGuestBookings();
+        }
+
+        // Guest: Refresh Chambers Lists
+        function refreshRoomAvailability() {
+            const grid = document.getElementById('guestRoomsGrid');
+            grid.innerHTML = '';
+
+            if (mockRooms.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No rooms registered in Fisher El chamber storage.</div>';
+                return;
+            }
+
+            mockRooms.forEach(room => {
+                const card = document.createElement('div');
+                card.className = 'room-card';
+
+                let icon = 'fa-bed';
+                if (room.style === 'Deluxe') icon = 'fa-award';
+                if (room.style === 'Family') icon = 'fa-people-roof';
+                if (room.style === 'Business Suite') icon = 'fa-crown';
+
+                let badgeClass = 'badge-available';
+                if (room.status === 'Occupied') badgeClass = 'badge-occupied';
+                if (room.status === 'Dirty') badgeClass = 'badge-dirty';
+                if (room.status === 'Maintenance') badgeClass = 'badge-maintenance';
+                if (room.status === 'Reserved') badgeClass = 'badge-reserved';
+
+                // Check if THIS user is the one who reserved this room
+                const currentEmail = (localStorage.getItem('fe_auth_email') || '').toLowerCase();
+                const myReservation = room.status === 'Reserved'
+                    ? mockBookings.find(b => b.room_id === room.id && b.status === 'Pending' && b.guest_email && b.guest_email.toLowerCase() === currentEmail)
+                    : null;
+
+                let reservedNote = '';
+                if (room.status === 'Reserved') {
+                    if (myReservation) {
+                        reservedNote = `<div style="margin-bottom: 10px; padding: 8px 12px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; font-size: 0.8rem; color: #a78bfa; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-check"></i> <span><strong>Your Reservation</strong> — Awaiting front desk check-in</span>
+                        </div>`;
+                    } else {
+                        reservedNote = `<div style="margin-bottom: 10px; padding: 8px 12px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-user-secret"></i> <span>Reserved by a guest &mdash; <em>identity confidential</em></span>
+                        </div>`;
+                    }
+                }
+
+                let actionBtn = '';
+                if (room.status === 'Available') {
+                    actionBtn = `<button class="btn-luxury" style="width: 100%;" onclick="bookRoom(${room.id})"><i class="fa-solid fa-bookmark"></i> Book Now</button>`;
+                } else if (room.status === 'Reserved') {
+                    if (myReservation) {
+                        actionBtn = `<button class="btn-secondary" style="width: 100%; cursor: not-allowed; background: rgba(139, 92, 246, 0.2); color: #a78bfa; border-color: rgba(139, 92, 246, 0.4); font-weight: 600;" disabled><i class="fa-solid fa-circle-check"></i> Your Booking Pending</button>`;
+                    } else {
+                        actionBtn = `<button class="btn-secondary" style="width: 100%; cursor: not-allowed; background: rgba(139, 92, 246, 0.1); color: #a78bfa; border-color: rgba(139, 92, 246, 0.25);" disabled><i class="fa-solid fa-clock"></i> Not Available</button>`;
+                    }
+                } else {
+                    actionBtn = `<button class="btn-secondary" style="width: 100%; cursor: not-allowed;" disabled><i class="fa-solid fa-circle-ban"></i> Unavailable</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="room-image-stub">
+                        <i class="fa-solid ${icon}"></i>
+                        <span class="room-price-tag">₱${Number(room.price_per_night).toFixed(2)} / Night</span>
+                    </div>
+                    <div class="room-card-body">
+                        <span class="room-badge ${badgeClass}">${room.status}</span>
+                        <h4 class="room-card-title">${room.style} (Room ${room.room_number})</h4>
+                        <p class="room-card-desc">Experience royal high-class comfort in Fisher El wing. Fitted with state of the art air conditioning, keyless card locks, and premium views.</p>
+                        ${reservedNote}
+                        ${actionBtn}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Guest: Book stay action
+        async function bookRoom(roomId) {
+            const checkIn = document.getElementById('guestCheckIn').value;
+            const checkOut = document.getElementById('guestCheckOut').value;
+
+            if (!checkIn || !checkOut) {
+                alert("Please select both check-in and check-out dates.");
+                return;
+            }
+
+            if (new Date(checkOut) <= new Date(checkIn)) {
+                alert("Check-out date must be after check-in date.");
+                return;
+            }
+
+            if (isMicroservices) {
+                try {
+                    const response = await fetch('http://localhost:8080/api/bookings/bookings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            room_id: roomId,
+                            check_in_date: checkIn,
+                            check_out_date: checkOut
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.error || errData.message || 'API Booking request failed.');
+                    }
+
+                    const data = await response.json();
+                    showToast(
+                        "Stay Reserved Successfully", 
+                        `Booking #${data.booking.id} is confirmed. Please wait for front desk check-in approval.`
+                    );
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Booking failed: " + error.message);
+                }
+            } else {
+                // Sandbox Mode
+                const room = mockRooms.find(r => r.id === roomId);
+                if (!room) {
+                    alert("Error: Selected chamber could not be found in Fisher El registry.");
+                    return;
+                }
+
+                if (room.status !== 'Available') {
+                    alert(`Chamber ${room.room_number} is currently ${room.status} and cannot be booked.`);
+                    return;
+                }
+
+                const isOverlapping = mockBookings.some(b => {
+                    if (b.room_id != roomId) return false;
+                    if (b.status === 'Cancelled' || b.status === 'Completed') return false;
+                    const existingStart = new Date(b.check_in_date);
+                    const existingEnd = new Date(b.check_out_date);
+                    const requestedStart = new Date(checkIn);
+                    const requestedEnd = new Date(checkOut);
+                    return (requestedStart < existingEnd) && (requestedEnd > existingStart);
+                });
+
+                if (isOverlapping) {
+                    alert(`Chamber ${room.room_number} is already reserved for all or part of your selected dates (${checkIn} to ${checkOut}). Please select a different date range or choose another chamber.`);
+                    return;
+                }
+
+                const nights = Math.max(1, (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+                const totalStayPrice = room.price_per_night * nights;
+
+                const name = localStorage.getItem('fe_auth_name') || "Fisher El VIP Guest";
+                const email = localStorage.getItem('fe_auth_email') || "guest@fisherel.com";
+
+                const newBooking = {
+                    id: Math.floor(1000 + Math.random() * 9000),
+                    guest_id: email === "guest@fisherel.com" ? 1 : Math.floor(1000 + Math.random() * 9000),
+                    guest_name: name,
+                    guest_email: email,
+                    room_id: room.id,
+                    check_in_date: checkIn,
+                    check_out_date: checkOut,
+                    price_at_booking: totalStayPrice,
+                    status: 'Pending'
+                };
+
+                mockBookings.push(newBooking);
+                room.status = 'Reserved';
+
+                // Add default invoice mock
+                mockInvoices.push({
+                    id: 4000 + newBooking.id,
+                    booking_id: newBooking.id,
+                    guest_id: newBooking.guest_id,
+                    guest_name: newBooking.guest_name,
+                    guest_email: newBooking.guest_email,
+                    subtotal: totalStayPrice,
+                    tax: totalStayPrice * 0.12,
+                    total_amount: totalStayPrice * 1.12,
+                    payment_status: 'Unpaid',
+                    roomCharges: [{ charge_description: "Fisher El Stay Room Booking Fee", amount: totalStayPrice }]
+                });
+
+                saveLocalMockDB();
+                
+                showToast(
+                    "Stay Reserved Successfully", 
+                    `Booking #${newBooking.id} for Room ${room.room_number} is pending front desk check-in approval.`
+                );
+                
+                refreshAllViews();
+            }
+        }
+
+        // Guest: Render Bookings Table
+        function renderGuestBookings() {
+            const tbody = document.getElementById('guestBookingsTable');
+            tbody.innerHTML = '';
+
+            const email = localStorage.getItem('fe_auth_email') || "guest@fisherel.com";
+            // Filter dynamically by email to support registering dynamic accounts
+            const guestBookings = isMicroservices 
+                ? mockBookings 
+                : mockBookings.filter(b => b.guest_email && b.guest_email.toLowerCase() === email.toLowerCase());
+
+            if (guestBookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-secondary); padding:20px;">No stays logged. Book a luxury room above!</td></tr>';
+                return;
+            }
+
+            guestBookings.forEach(booking => {
+                const room = booking.room || mockRooms.find(r => r.id === booking.room_id) || { room_number: 'N/A', style: 'N/A' };
+                let badgeClass = 'badge-available';
+                if (booking.status === 'Confirmed') badgeClass = 'badge-available';
+                if (booking.status === 'Cancelled') badgeClass = 'badge-dirty';
+                if (booking.status === 'Completed') badgeClass = 'badge-maintenance';
+                if (booking.status === 'Pending') badgeClass = 'badge-dirty';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#FE-${booking.id}</td>
+                        <td>Room ${room.room_number}</td>
+                        <td>${room.style}</td>
+                        <td>${booking.check_in_date}</td>
+                        <td>${booking.check_out_date}</td>
+                        <td style="font-weight: 600; color: var(--text-gold);">₱${Number(booking.price_at_booking).toFixed(2)}</td>
+                        <td><span class="status-pill ${badgeClass}">${booking.status}</span></td>
+                        <td>
+                            <button class="btn-luxury" style="padding: 6px 12px; font-size: 0.8rem;" onclick="viewBillingReceipt(${booking.id})">
+                                <i class="fa-solid fa-file-invoice"></i> View Bill
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Guest: View billing invoice modal
+        function viewBillingReceipt(bookingId) {
+            const booking = mockBookings.find(b => b.id === bookingId);
+            const invoice = mockInvoices.find(i => i.booking_id === bookingId);
+            const room = booking.room || mockRooms.find(r => r.id === booking.room_id) || { room_number: 'N/A', style: 'N/A' };
+            const modalContent = document.getElementById('invoiceModalContent');
+
+            if (!invoice) {
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--color-warning);"></i>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">Invoice has not been generated yet. Please perform front desk check-in first.</p>
+                    </div>
+                `;
+                openModal('invoiceModal');
+                return;
+            }
+
+            let statusClass = 'badge-dirty';
+            if (invoice.payment_status === 'Paid') statusClass = 'badge-available';
+
+            let chargesHtml = '';
+            const roomCharges = invoice.room_charges || invoice.roomCharges || [];
+            roomCharges.forEach(charge => {
+                chargesHtml += `
+                    <div class="receipt-row">
+                        <span>• ${charge.charge_description}</span>
+                        <span>₱${Number(charge.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            modalContent.innerHTML = `
+                <div class="invoice-receipt">
+                    <div class="receipt-header">
+                        <i class="fa-solid fa-crown logo-crown" style="font-size: 1.8rem; margin-bottom: 5px;"></i>
+                        <div class="receipt-title">Fisher El Hotel Corp.</div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Lacson St, Bacolod City, Philippines</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Invoice #${invoice.id} • Booking #FE-${booking.id}</div>
+                    </div>
+                    
+                    <div class="receipt-row" style="margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">GUEST BILLING DETAIL:</div>
+                            <div style="font-weight: 600;">${invoice.guest_name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${invoice.guest_email}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">CHAMBER ASSIGNED:</div>
+                            <div style="font-weight: 600;">Room ${room.room_number} (${room.style})</div>
+                            <span class="status-pill ${statusClass}" style="margin-top: 5px;">${invoice.payment_status}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">AUDITED ACCOUNT CHARGES:</div>
+                        ${chargesHtml}
+                    </div>
+
+                    <div class="receipt-total">
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0;">
+                            <span>Subtotal</span>
+                            <span>₱${Number(invoice.subtotal).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0; margin-bottom: 15px;">
+                            <span>Gov VAT (12%)</span>
+                            <span>₱${Number(invoice.tax).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>TOTAL AMOUNT DUE</span>
+                            <span>₱${Number(invoice.total_amount).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            openModal('invoiceModal');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Manager Executive Panel</title>
+    <!-- Modern Luxury Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #0b0d17;
+            --bg-surface: rgba(22, 28, 45, 0.6);
+            --bg-surface-solid: #161c2d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --gradient-red: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-gold: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #f3e5ab 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #e2c974;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #06b6d4;
+            --glass-border: rgba(239, 68, 68, 0.15);
+            --shadow-gold: 0 8px 32px 0 rgba(239, 68, 68, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272f44;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dc2626;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.12);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, .brand-title {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.15);
+            padding-bottom: 10px;
+        }
+
+        /* Luxury Header & Navigation */
+        header {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-crown {
+            color: #ef4444;
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.4));
+        }
+
+        .brand-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: #ef4444;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        .logout-btn-hud {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn-hud:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Container Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Dynamic Status HUD */
+        .status-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 24px;
+            background: rgba(22, 28, 45, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* Inputs & Controls */
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control, select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Premium Buttons */
+        .btn-luxury {
+            background: var(--gradient-gold);
+            color: #0b0d17;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+            background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 100%);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Table Design */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(39, 47, 68, 0.6);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Action Buttons Grid */
+        .flex-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Alert Pill Status */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 4px 12px;
+        }
+
+        .badge-available { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-occupied { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-dirty { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-maintenance { background: rgba(6, 182, 212, 0.15); color: var(--color-info); border: 1px solid rgba(6, 182, 212, 0.3); }
+
+        /* Invoice Modal receipt styles */
+        .invoice-receipt {
+            font-family: 'Outfit', sans-serif;
+            background: #111522;
+            border: 1px dashed var(--accent-gold);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--text-gold);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .receipt-total {
+            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-gold);
+        }
+
+        /* Layout Grid */
+        .info-panel {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            display: grid;
+            margin-top: 20px;
+        }
+
+        /* Manager Stats cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(22, 28, 45, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-gold);
+        }
+
+        .stat-num {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        /* Dynamic Chart Mock */
+        .chart-container {
+            margin-top: 30px;
+            padding: 24px;
+            background: rgba(22, 28, 45, 0.4);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            padding-top: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-bar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .chart-bar-fill {
+            width: 32px;
+            background: var(--gradient-gold);
+            border-radius: 6px 6px 0 0;
+            transition: var(--transition);
+            height: 0; /* Animated in JS */
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .chart-bar-fill.high {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .chart-day {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Toast Alert Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 13, 23, 0.95);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        .toast-notification.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+        }
+
+        /* Dialog Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 13, 23, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--bg-surface-solid);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: var(--shadow-gold);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 992px) {
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        // Secure Auth Guard Check
+        if (localStorage.getItem('fe_auth_role') !== 'manager') {
+            window.location.href = './index.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Dynamic Luxury Header -->
+    <header>
+        <div class="logo-area" onclick="window.location.href = './index.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-crown logo-crown"></i>
+            <div>
+                <div class="brand-title">Fisher El Hotel</div>
+                <div class="brand-subtitle">Executive Panel</div>
+            </div>
+        </div>
+
+        <!-- Connection toggle & logout buttons -->
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <!-- Dynamic Connection Toggle -->
+            <button class="logout-btn-hud" onclick="performLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- Master Container -->
+    <div class="main-container">
+
+        <!-- Status HUD bar -->
+        <div class="status-hud">
+            <div class="user-pill">
+                <div class="avatar-ring" id="userAvatar">M</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.95rem;" id="userProfileName">General Manager Dashboard</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);" id="userRoleSub">Manager • manager@fisherel.com</div>
+                </div>
+            </div>
+            <div>
+                <span class="status-pill badge-available" id="jwtStatusText"><i class="fa-solid fa-key"></i> Shared JWT Encoded</span>
+            </div>
+        </div>
+
+        <h2><i class="fa-solid fa-chart-line"></i> General Manager Executive Panel</h2>
+
+        <!-- Metrics Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Royal Gross Revenue</div>
+                <div class="stat-num" id="statRevenue">₱48,500.00</div>
+                <span style="color: var(--color-success); font-size: 0.85rem;"><i class="fa-solid fa-arrow-up-right-dots"></i> Standard VAT inclusive</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Suite Occupancy Rate</div>
+                <div class="stat-num" id="statOccupancy">37.5%</div>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;" id="statOccupancyLabel">3 of 8 active units booked</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Outstanding Invoices</div>
+                <div class="stat-num" id="statInvoices">1 Pending</div>
+                <span style="color: var(--color-warning); font-size: 0.85rem;"><i class="fa-solid fa-circle-exclamation"></i> Action required</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Staff Registry</div>
+                <div class="stat-num" id="statStaff">4 Active</div>
+                <span style="color: var(--color-info); font-size: 0.85rem;"><i class="fa-solid fa-users-gear"></i> Systems active</span>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <!-- Active Billing Invoice Registry -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: var(--accent-gold);"><i class="fa-solid fa-file-invoice-dollar"></i> Billing Invoice Registry</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Guest</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Finance Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="managerInvoicesTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics Chart Mock -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: var(--accent-gold);"><i class="fa-solid fa-square-poll-vertical"></i> Weekly Room Occupancy Earnings</h3>
+                <div class="chart-container">
+                    <div class="chart-bars" id="earningsChart">
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill" style="height: 45%;"></div>
+                            <div class="chart-day">Mon</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill" style="height: 60%;"></div>
+                            <div class="chart-day">Tue</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill" style="height: 50%;"></div>
+                            <div class="chart-day">Wed</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill" style="height: 75%;"></div>
+                            <div class="chart-day">Thu</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill high" style="height: 90%;"></div>
+                            <div class="chart-day">Fri</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill high" style="height: 95%;"></div>
+                            <div class="chart-day">Sat</div>
+                        </div>
+                        <div class="chart-bar-col">
+                            <div class="chart-bar-fill" style="height: 70%;"></div>
+                            <div class="chart-day">Sun</div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Staff Management & Registry -->
+        <div class="glass-card" style="margin-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.2rem; color: var(--accent-gold); margin-bottom: 0;">
+                    <i class="fa-solid fa-users-gear"></i> Staff Registry & System Credentials
+                </h3>
+                <button class="btn-luxury" style="padding: 8px 16px; font-size: 0.85rem;" onclick="openModal('staffModal')">
+                    <i class="fa-solid fa-user-plus"></i> Register New Staff
+                </button>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Staff Member Name</th>
+                            <th>Email Address</th>
+                            <th>Designated System Role</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="managerStaffTable">
+                        <!-- Dynamically Populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Receipt Invoice View Modal -->
+    <div class="modal-overlay" id="invoiceModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('invoiceModal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar"></i> Royal Invoicing Statement</h3>
+            
+            <div id="invoiceModalContent">
+                <!-- Dynamically Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Room Charge Modal -->
+    <div class="modal-overlay" id="chargeModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('chargeModal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 20px;"><i class="fa-solid fa-plus-circle"></i> Log Room Charges</h3>
+            
+            <input type="hidden" id="chargeInvoiceId">
+            <div class="input-group">
+                <label>Charge Description / Amenity Type</label>
+                <select id="chargeType" class="form-control" onchange="updateDefaultChargeAmount()">
+                    <option value="Fisher El Restaurant Fine Dining">Fisher El Restaurant Fine Dining (₱1,200.00)</option>
+                    <option value="Executive Sky Rooftop Pool Club Spa">Executive Sky Rooftop Pool Club Spa (₱2,500.00)</option>
+                    <option value="Mini-Bar Beverage Refreshments">Mini-Bar Beverage Refreshments (₱450.00)</option>
+                    <option value="Standard Laundry & Pressing Service">Standard Laundry & Pressing Service (₱350.00)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Charge Amount (PHP ₱)</label>
+                <input type="number" id="chargeAmount" class="form-control" value="1200.00">
+            </div>
+
+            <button class="btn-luxury" style="width: 100%;" onclick="submitRoomCharge()">
+                <i class="fa-solid fa-plus"></i> Post Charge Item
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div class="modal-overlay" id="staffModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('staffModal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 20px;"><i class="fa-solid fa-user-plus"></i> Register New Staff Member</h3>
+            
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="staffName" class="form-control" placeholder="e.g. Jane Doe">
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="staffEmail" class="form-control" placeholder="e.g. receptionist2@fisherel.com">
+            </div>
+            <div class="input-group">
+                <label>Temporary Password</label>
+                <input type="password" id="staffPassword" class="form-control" placeholder="Min. 6 characters">
+            </div>
+            <div class="input-group">
+                <label>System Access Role</label>
+                <select id="staffRole" class="form-control">
+                    <option value="receptionist">Receptionist (Front Desk)</option>
+                    <option value="housekeeper">Housekeeper (Back-of-House)</option>
+                    <option value="manager">Manager (Executive Administration)</option>
+                </select>
+            </div>
+
+            <button class="btn-luxury" style="width: 100%; margin-top: 10px;" onclick="submitStaffRegistration()">
+                <i class="fa-solid fa-user-check"></i> Register Staff Account
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast alert HUD -->
+    <div class="toast-notification" id="toastHUD">
+        <i class="fa-solid fa-envelope-open-text toast-icon"></i>
+        <div>
+            <div style="font-weight: 600; color: var(--accent-gold);" id="toastTitle">System Notification</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);" id="toastMsg">Booking confirmation details dispatched.</div>
+        </div>
+    </div>
+
+    <script>
+        // Core State
+        let isMicroservices = false;
+        const token = localStorage.getItem('fe_auth_token');
+        let liveAnalytics = null;
+        
+        // Mock DB storage
+        let mockRooms = [];
+        let mockBookings = [];
+        let mockInvoices = [];
+
+        // Boot loader
+        window.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                isMicroservices = true;
+            }
+            refreshAllViews();
+            
+            // Subtle micro-animation for chart bars
+            setTimeout(() => {
+                document.querySelectorAll('.chart-bar-fill').forEach(bar => {
+                    const originalHeight = bar.style.height;
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = originalHeight;
+                    }, 200);
+                });
+            }, 500);
+        });
+
+        // Load DB from localStorage
+        function loadLocalMockDB() {
+            mockRooms = JSON.parse(localStorage.getItem('fe_mock_rooms')) || [];
+            mockBookings = JSON.parse(localStorage.getItem('fe_mock_bookings')) || [];
+            mockInvoices = JSON.parse(localStorage.getItem('fe_mock_invoices')) || [];
+            
+            // Auto initialize the local sandbox registry
+            let users = localStorage.getItem('fe_mock_users');
+            if (!users) {
+                users = [
+                    { name: "Fisher El VIP Guest", email: "guest@fisherel.com", password: "password", role: "guest" },
+                    { name: "Fisher El Front Desk Terminal", email: "receptionist@fisherel.com", password: "password", role: "receptionist" },
+                    { name: "Fisher El Housekeeper", email: "housekeeper@fisherel.com", password: "password", role: "housekeeper" },
+                    { name: "Fisher El General Manager", email: "manager@fisherel.com", password: "password", role: "manager" }
+                ];
+                localStorage.setItem('fe_mock_users', JSON.stringify(users));
+            }
+        }
+
+        // Load DB from Live API Gateway
+        async function loadLiveMockDB() {
+            try {
+                // Fetch rooms from Live API
+                const roomsResponse = await fetch('http://localhost:8080/api/bookings/rooms', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!roomsResponse.ok) throw new Error('Failed to fetch rooms');
+                mockRooms = await roomsResponse.json();
+
+                // Fetch bookings from Live API
+                const bookingsResponse = await fetch('http://localhost:8080/api/bookings/bookings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
+                mockBookings = await bookingsResponse.json();
+
+                // Fetch invoices from Live API
+                const invoicesResponse = await fetch('http://localhost:8080/api/finance/invoices', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!invoicesResponse.ok) throw new Error('Failed to fetch invoices');
+                mockInvoices = await invoicesResponse.json();
+
+                // Fetch live analytics
+                const analyticsResponse = await fetch('http://localhost:8080/api/finance/analytics', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (analyticsResponse.ok) {
+                    liveAnalytics = await analyticsResponse.json();
+                } else {
+                    liveAnalytics = null;
+                }
+            } catch (error) {
+                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                isMicroservices = false;
+                updateConnectionBadge();
+                loadLocalMockDB();
+                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+            }
+        }
+
+        // Update connection status badge dynamically in the header HUD
+        function updateConnectionBadge() {
+            const badgeTextEl = document.getElementById('jwtStatusText');
+            if (!badgeTextEl) return;
+            const container = badgeTextEl.parentNode;
+            container.innerHTML = '';
+            
+            // JWT Badge
+            const jwtBadge = document.createElement('span');
+            jwtBadge.className = 'status-pill badge-available';
+            jwtBadge.id = 'jwtStatusText';
+            jwtBadge.innerHTML = `<i class="fa-solid fa-key"></i> Shared JWT Encoded`;
+            container.appendChild(jwtBadge);
+
+            // Connection Badge
+            const connBadge = document.createElement('span');
+            connBadge.className = 'status-pill';
+            if (isMicroservices) {
+                connBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                connBadge.style.color = '#10b981';
+                connBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } else {
+                connBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                connBadge.style.color = '#f59e0b';
+                connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+            container.appendChild(connBadge);
+        }
+
+        // Save DB to localStorage
+        function saveLocalMockDB() {
+            localStorage.setItem('fe_mock_rooms', JSON.stringify(mockRooms));
+            localStorage.setItem('fe_mock_bookings', JSON.stringify(mockBookings));
+            localStorage.setItem('fe_mock_invoices', JSON.stringify(mockInvoices));
+        }
+
+        // Settle Logout
+        function performLogout() {
+            localStorage.removeItem('fe_auth_role');
+            localStorage.removeItem('fe_auth_token');
+            localStorage.removeItem('fe_auth_email');
+            localStorage.removeItem('fe_auth_name');
+            window.location.href = './index.html';
+        }
+
+        // Toast alert HUD helper
+        function showToast(title, message) {
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = message;
+            const toast = document.getElementById('toastHUD');
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 4000);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        async function refreshAllViews() {
+            updateConnectionBadge();
+            if (isMicroservices) {
+                await loadLiveMockDB();
+            } else {
+                loadLocalMockDB();
+            }
+            renderManagerInvoices();
+            renderManagerStaff();
+            calculateManagerAnalytics();
+        }
+
+        // GM: Settle calculations
+        function calculateManagerAnalytics() {
+            if (isMicroservices && liveAnalytics) {
+                // Use live backend analytics!
+                document.getElementById('statRevenue').textContent = `₱${Number(liveAnalytics.total_revenue).toFixed(2)}`;
+                document.getElementById('statInvoices').textContent = `${liveAnalytics.unpaid_count} Pending`;
+
+                // Calculate occupancy rate using live rooms list
+                const occupiedCount = mockRooms.filter(r => r.status === 'Occupied').length;
+                const rate = mockRooms.length ? (occupiedCount / mockRooms.length) * 100 : 0;
+                document.getElementById('statOccupancy').textContent = `${rate.toFixed(1)}%`;
+                document.getElementById('statOccupancyLabel').textContent = `${occupiedCount} of ${mockRooms.length} active units booked`;
+
+                // Live chart render using liveAnalytics.earnings_chart
+                if (liveAnalytics.earnings_chart) {
+                    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    const chartContainers = document.querySelectorAll('.chart-bar-fill');
+                    const maxVal = Math.max(...Object.values(liveAnalytics.earnings_chart), 1000);
+                    days.forEach((day, index) => {
+                        const amt = liveAnalytics.earnings_chart[day] || 0;
+                        const pct = Math.min(100, Math.max(10, (amt / maxVal) * 100));
+                        if (chartContainers[index]) {
+                            chartContainers[index].style.height = `${pct}%`;
+                            const tooltip = chartContainers[index].querySelector('.chart-bar-tooltip');
+                            if (tooltip) {
+                                tooltip.textContent = `₱${Number(amt).toFixed(0)}`;
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Sandbox Mode
+                let grossPaid = 0;
+                let outstandingCount = 0;
+
+                mockInvoices.forEach(inv => {
+                    if (inv.payment_status === 'Paid') {
+                        grossPaid += inv.total_amount;
+                    } else {
+                        outstandingCount++;
+                    }
+                });
+
+                document.getElementById('statRevenue').textContent = `₱${grossPaid.toFixed(2)}`;
+                document.getElementById('statInvoices').textContent = `${outstandingCount} Pending`;
+
+                const occupiedCount = mockRooms.filter(r => r.status === 'Occupied').length;
+                const rate = mockRooms.length ? (occupiedCount / mockRooms.length) * 100 : 0;
+                document.getElementById('statOccupancy').textContent = `${rate.toFixed(1)}%`;
+                document.getElementById('statOccupancyLabel').textContent = `${occupiedCount} of ${mockRooms.length} active units booked`;
+            }
+
+            // Compute Staff count dynamically
+            const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+            const staffCount = localUsers.filter(u => u.role !== 'guest').length;
+            document.getElementById('statStaff').textContent = `${staffCount} Active`;
+        }
+
+        // GM: Render invoices
+        function renderManagerInvoices() {
+            const tbody = document.getElementById('managerInvoicesTable');
+            tbody.innerHTML = '';
+
+            if (mockInvoices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 20px;">No invoices registered.</td></tr>';
+                return;
+            }
+
+            // Show newest invoices first
+            const sorted = [...mockInvoices].reverse();
+
+            sorted.forEach(inv => {
+                let badgeClass = 'badge-dirty';
+                if (inv.payment_status === 'Paid') badgeClass = 'badge-available';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>#INV-${inv.id}</strong></td>
+                        <td>
+                            <strong>${inv.guest_name}</strong><br>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">${inv.guest_email}</span>
+                        </td>
+                        <td style="font-weight:600; color: var(--text-gold);">&#8369;${Number(inv.total_amount).toFixed(2)}</td>
+                        <td><span class="status-pill ${badgeClass}">${inv.payment_status}</span></td>
+                        <td>
+                            <div class="flex-actions">
+                                <button class="btn-luxury" style="padding: 5px 10px; font-size: 0.8rem;" onclick="viewBillingReceipt(${inv.booking_id})">
+                                    <i class="fa-solid fa-file-invoice"></i> Bill Details
+                                </button>
+                                ${inv.payment_status === 'Unpaid' ? `
+                                    <button class="btn-luxury" style="padding: 5px 10px; font-size: 0.8rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; box-shadow: none;" onclick="processSimulationPayment(${inv.id})">
+                                        <i class="fa-solid fa-check"></i> Settle Bill
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="openAddChargeModal(${inv.id})">
+                                        <i class="fa-solid fa-plus"></i> Add Charge
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // GM: View billing invoice modal
+        function viewBillingReceipt(bookingId) {
+            const booking = mockBookings.find(b => b.id === bookingId);
+            const invoice = mockInvoices.find(i => i.booking_id === bookingId);
+            const room = booking.room || mockRooms.find(r => r.id === booking.room_id) || { room_number: 'N/A', style: 'N/A' };
+            const modalContent = document.getElementById('invoiceModalContent');
+
+            if (!invoice) {
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--color-warning);"></i>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">Invoice has not been generated yet.</p>
+                    </div>
+                `;
+                openModal('invoiceModal');
+                return;
+            }
+
+            let statusClass = 'badge-dirty';
+            if (invoice.payment_status === 'Paid') statusClass = 'badge-available';
+
+            let chargesHtml = '';
+            const roomCharges = invoice.room_charges || invoice.roomCharges || [];
+            roomCharges.forEach(charge => {
+                chargesHtml += `
+                    <div class="receipt-row">
+                        <span>&#8226; ${charge.charge_description}</span>
+                        <span>&#8369;${Number(charge.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            // Format issued date
+            const issuedDate = invoice.issued_date || (invoice.created_at ? new Date(invoice.created_at).toISOString().substring(0, 10) : new Date().toISOString().substring(0, 10));
+
+            modalContent.innerHTML = `
+                <div class="invoice-receipt">
+                    <div class="receipt-header">
+                        <i class="fa-solid fa-crown logo-crown" style="font-size: 1.8rem; margin-bottom: 5px;"></i>
+                        <div class="receipt-title">Fisher El Hotel Corp.</div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Lacson St, Bacolod City, Philippines</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Invoice #${invoice.id} &bull; Booking #FE-${booking.id}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 3px;"><i class="fa-solid fa-calendar-days"></i> Issued: ${issuedDate}</div>
+                    </div>
+                    
+                    <div class="receipt-row" style="margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">GUEST BILLING DETAIL:</div>
+                            <div style="font-weight: 600;">${invoice.guest_name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${invoice.guest_email}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">CHAMBER ASSIGNED:</div>
+                            <div style="font-weight: 600;">Room ${room.room_number} (${room.style})</div>
+                            <span class="status-pill ${statusClass}" style="margin-top: 5px;">${invoice.payment_status}</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-plane-arrival"></i> Check-In Date</div>
+                            <div style="font-weight: 600; margin-top: 4px;">${booking.check_in_date || '—'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-plane-departure"></i> Check-Out Date</div>
+                            <div style="font-weight: 600; margin-top: 4px;">${booking.check_out_date || '—'}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">AUDITED ACCOUNT CHARGES:</div>
+                        ${chargesHtml}
+                    </div>
+
+                    <div class="receipt-total">
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0;">
+                            <span>Subtotal</span>
+                            <span>&#8369;${Number(invoice.subtotal).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0; margin-bottom: 15px;">
+                            <span>Gov VAT (12%)</span>
+                            <span>&#8369;${Number(invoice.tax).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>TOTAL AMOUNT DUE</span>
+                            <span>&#8369;${Number(invoice.total_amount).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                ${invoice.payment_status === 'Unpaid' ? 
+                    `<button class="btn-luxury" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; box-shadow:none;" onclick="processSimulationPayment(${invoice.id}); closeModal('invoiceModal');"><i class="fa-solid fa-credit-card"></i> Settle Balance Now</button>` : 
+                    ''
+                }
+            `;
+            openModal('invoiceModal');
+        }
+
+        // Add charges triggers
+        function openAddChargeModal(invoiceId) {
+            document.getElementById('chargeInvoiceId').value = invoiceId;
+            updateDefaultChargeAmount();
+            openModal('chargeModal');
+        }
+
+        function updateDefaultChargeAmount() {
+            const type = document.getElementById('chargeType').value;
+            let val = 1200;
+            if (type.includes('Pool')) val = 2500;
+            if (type.includes('Mini-Bar')) val = 450;
+            if (type.includes('Laundry')) val = 350;
+            document.getElementById('chargeAmount').value = val;
+        }
+
+        async function submitRoomCharge() {
+            const invId = parseInt(document.getElementById('chargeInvoiceId').value);
+            const desc = document.getElementById('chargeType').value;
+            const amount = parseFloat(document.getElementById('chargeAmount').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                alert("Please enter a valid charge amount.");
+                return;
+            }
+
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`http://localhost:8080/api/finance/invoices/${invId}/charges`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            charge_description: desc,
+                            amount: amount
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Failed to post live room charge.');
+                    }
+
+                    showToast("Audit Charge Added", `Successfully posted ${desc} of ₱${amount.toFixed(2)} to Live API.`);
+                    closeModal('chargeModal');
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Charge Post failed: " + error.message);
+                }
+            } else {
+                const invoice = mockInvoices.find(i => i.id === invId);
+                
+                invoice.roomCharges.push({
+                    charge_description: desc,
+                    amount: amount
+                });
+
+                // Recalculate invoice totals
+                let sub = 0;
+                invoice.roomCharges.forEach(ch => sub += ch.amount);
+                invoice.subtotal = sub;
+                invoice.tax = sub * 0.12;
+                invoice.total_amount = sub * 1.12;
+                invoice.payment_status = 'Unpaid'; // Settle back to unpaid because charges changed!
+
+                saveLocalMockDB();
+                closeModal('chargeModal');
+                showToast("Audit Charge Added", `Posted item charge of ₱${amount.toFixed(2)} to Invoice #${invoice.id}.`);
+                refreshAllViews();
+            }
+        }
+
+        // Payment settle triggers
+        async function processSimulationPayment(invId) {
+            const invoice = mockInvoices.find(i => i.id === invId);
+            if (!invoice) return;
+
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`http://localhost:8080/api/finance/invoices/${invId}/pay`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            amount: invoice.total_amount,
+                            payment_method: 'Credit Card',
+                            transaction_reference: `PAY-LIVE-${Date.now()}`
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Failed to clear live payment.');
+                    }
+
+                    showToast(
+                        "Payment Cleared", 
+                        `Recorded full payment of ₱${Number(invoice.total_amount).toFixed(2)} via live Microservices API.`
+                    );
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Payment Settlement failed: " + error.message);
+                }
+            } else {
+                invoice.payment_status = 'Paid';
+                saveLocalMockDB();
+                
+                showToast(
+                    "Payment Cleared", 
+                    `Recorded full payment of ₱${invoice.total_amount.toFixed(2)} for Guest ${invoice.guest_name}.`
+                );
+                refreshAllViews();
+            }
+        }
+
+        // GM: Render staff list
+        function renderManagerStaff() {
+            const tbody = document.getElementById('managerStaffTable');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+            const staffMembers = localUsers.filter(u => u.role !== 'guest');
+
+            if (staffMembers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 20px;">No staff registered.</td></tr>';
+                return;
+            }
+
+            staffMembers.forEach(staff => {
+                let badgeClass = 'badge-available'; // receptionist
+                if (staff.role === 'manager') badgeClass = 'badge-occupied';
+                if (staff.role === 'housekeeper') badgeClass = 'badge-dirty';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${staff.name}</strong></td>
+                        <td>${staff.email}</td>
+                        <td><span class="status-pill ${badgeClass}">${staff.role.toUpperCase()}</span></td>
+                        <td><span class="status-pill badge-available"><i class="fa-solid fa-circle-check"></i> System Active</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // GM: Submit staff registration to API / local
+        async function submitStaffRegistration() {
+            const name = document.getElementById('staffName').value.trim();
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const password = document.getElementById('staffPassword').value;
+            const roleSelect = document.getElementById('staffRole').value;
+
+            if (!name || !email || !password) {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters.");
+                return;
+            }
+
+            const staffPayload = {
+                name: name,
+                email: email,
+                password: password,
+                role: roleSelect
+            };
+
+            if (isMicroservices) {
+                try {
+                    const token = localStorage.getItem('fe_auth_token');
+                    const response = await fetch('http://localhost:8080/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(staffPayload)
+                    });
+
+                    if (!response.ok) {
+                        const data = await response.json().catch(() => ({}));
+                        throw new Error(data.message || 'Staff registration API failed.');
+                    }
+
+                    // Save locally too so offline is synchronized
+                    saveLocalStaff(name, email, password, roleSelect);
+                    
+                    showToast("Staff Registered", `Successfully registered ${name} (${roleSelect}) via live Microservices API.`);
+                    closeModal('staffModal');
+                    clearStaffForm();
+                    refreshAllViews();
+                } catch (error) {
+                    alert("API Staff registration failed: " + error.message + ". Saving to Local Sandbox instead.");
+                    saveLocalStaff(name, email, password, roleSelect);
+                    showToast("Staff Registered (Sandbox)", `Registered ${name} in Local Sandbox Mode.`);
+                    closeModal('staffModal');
+                    clearStaffForm();
+                    refreshAllViews();
+                }
+            } else {
+                // Sandbox Mode
+                const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+                if (localUsers.some(u => u.email.toLowerCase() === email)) {
+                    alert("Email address is already registered.");
+                    return;
+                }
+
+                saveLocalStaff(name, email, password, roleSelect);
+                showToast("Staff Registered (Sandbox)", `Successfully registered ${name} as ${roleSelect} in Local Sandbox Mode.`);
+                closeModal('staffModal');
+                clearStaffForm();
+                refreshAllViews();
+            }
+        }
+
+        function saveLocalStaff(name, email, password, userRole) {
+            const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+            localUsers.push({ name, email, password, role: userRole });
+            localStorage.setItem('fe_mock_users', JSON.stringify(localUsers));
+        }
+
+        function clearStaffForm() {
+            document.getElementById('staffName').value = '';
+            document.getElementById('staffEmail').value = '';
+            document.getElementById('staffPassword').value = '';
+            document.getElementById('staffRole').value = 'receptionist';
+        }
+    </script>
+</body>
+</html>

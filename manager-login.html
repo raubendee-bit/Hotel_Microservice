@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Login | Fisher El Hotel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #080d1b;
+            --surface: rgba(12, 19, 37, 0.95);
+            --surface-strong: rgba(23, 32, 54, 0.96);
+            --text: #eef2ff;
+            --muted: #8b96ac;
+            --accent: #fcd34d;
+            --accent-hover: #fbbf24;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            background: radial-gradient(circle at top, rgba(252, 212, 82, 0.16), transparent 32%),
+                        linear-gradient(180deg, #0b1222 0%, #05080f 100%);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+        .login-card {
+            width: min(520px, 100%);
+            padding: 36px;
+            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 34px 80px rgba(0,0,0,0.25);
+        }
+        h1 {
+            margin: 0 0 10px;
+            font-size: 2rem;
+        }
+        p {
+            margin: 0 0 28px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        input::placeholder { color: rgba(235, 239, 255, 0.45); }
+        button {
+            border: none;
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); }
+        .btn-primary {
+            background: linear-gradient(135deg, #a855f7, #22c55e);
+            color: #0b0d17;
+            width: 100%;
+        }
+        .btn-secondary {
+            margin-top: 14px;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+        .alert {
+            margin-top: 18px;
+            color: var(--danger);
+            display: none;
+        }
+        .page-link {
+            margin-top: 18px;
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <!-- Connection Status Indicator Badge -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <span id="loginConnBadge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--muted); transition: all 0.3s ease;">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Probing Backend...
+            </span>
+        </div>
+        <h1>Manager Login</h1>
+        <p>Sign in with your manager account to access finance, billing, and analytics controls.</p>
+
+        <div class="input-group">
+            <label>Email address</label>
+            <input id="email" type="email" value="manager@fisherel.com" />
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="password" />
+        </div>
+        <button id="loginBtn" class="btn-primary" onclick="performLogin()">Login as Manager</button>
+        <div id="alert" class="alert"></div>
+        <a class="page-link" href='./index.html'>Back to dashboard</a>
+    </div>
+
+    <script>
+        const role = 'manager';
+        const AUTH_URL = 'http://localhost:8080/api/auth/login';
+        const fallback = { email: 'manager@fisherel.com', password: 'password' };
+        
+        checkConnection();
+
+        async function performLogin() {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const alertEl = document.getElementById('alert');
+            const btn = document.getElementById('loginBtn');
+            alertEl.style.display = 'none';
+
+            if (!email || !password) {
+                alertEl.textContent = 'Enter both email and password.';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            try {
+                const response = await fetch(AUTH_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Auth failed');
+                }
+                const payload = await response.json();
+                saveSession(payload);window.location.href = './manager-landing.html';
+            } catch (error) {
+                // Fallback to local sandbox user registry
+                const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+                const matchedUser = localUsers.find(
+                    u => u.email.toLowerCase() === email && u.password === password && u.role === role
+                );
+
+                if (matchedUser) {
+                    saveLocalSession(matchedUser.email, matchedUser.name);window.location.href = './manager-landing.html';
+                    return;
+                }
+
+                if (email === fallback.email && password === fallback.password) {
+                    saveLocalSession(fallback.email, 'Fisher El General Manager');window.location.href = './manager-landing.html';
+                    return;
+                }
+                alertEl.textContent = 'Login failed. Verify credentials and ensure the API gateway is running.';
+                alertEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function saveSession(payload) {
+            localStorage.setItem('fe_auth_token', payload.token);
+            localStorage.setItem('fe_auth_role', payload.user.role);
+            localStorage.setItem('fe_auth_email', payload.user.email);
+            localStorage.setItem('fe_auth_name', payload.user.name);
+        }
+
+        function saveLocalSession(email, name) {
+            localStorage.setItem('fe_auth_token', '');
+            localStorage.setItem('fe_auth_role', role);
+            localStorage.setItem('fe_auth_email', email);
+            localStorage.setItem('fe_auth_name', name);
+        }
+
+        async function checkConnection() {
+            const badge = document.getElementById('loginConnBadge');
+            if (!badge) return;
+            try {
+                const response = await fetch(AUTH_URL, {
+                    method: 'OPTIONS',
+                    headers: { 'Accept': 'application/json' }
+                });
+                badge.style.background = 'rgba(16, 185, 129, 0.12)';
+                badge.style.color = '#34d399';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } catch (error) {
+                badge.style.background = 'rgba(245, 158, 11, 0.12)';
+                badge.style.color = '#fbbf24';
+                badge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+        }
+    </script>
+</body>
+</html>

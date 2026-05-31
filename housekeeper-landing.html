@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping Desk - Sanitization logs</title>
+    <!-- Modern Luxury Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #0b0d17;
+            --bg-surface: rgba(22, 28, 45, 0.6);
+            --bg-surface-solid: #161c2d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-gold: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #f3e5ab 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #e2c974;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #06b6d4;
+            --glass-border: rgba(245, 158, 11, 0.15);
+            --shadow-gold: 0 8px 32px 0 rgba(245, 158, 11, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272f44;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(245, 158, 11, 0.12);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, .brand-title {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            background: var(--gradient-orange);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+            padding-bottom: 10px;
+        }
+
+        /* Luxury Header & Navigation */
+        header {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-crown {
+            color: #f59e0b;
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));
+        }
+
+        .brand-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: #f59e0b;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        .logout-btn-hud {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn-hud:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Container Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Dynamic Status HUD */
+        .status-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 24px;
+            background: rgba(22, 28, 45, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* Inputs & Controls */
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Premium Buttons */
+        .btn-luxury {
+            background: var(--gradient-orange);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Layout Grid */
+        .info-panel {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            display: grid;
+            margin-top: 20px;
+        }
+
+        /* Table Design */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(39, 47, 68, 0.6);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Action Buttons Grid */
+        .flex-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Alert Pill Status */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 4px 12px;
+        }
+
+        .badge-available { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-occupied { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-dirty { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-maintenance { background: rgba(6, 182, 212, 0.15); color: var(--color-info); border: 1px solid rgba(6, 182, 212, 0.3); }
+
+        /* Toast Alert Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 13, 23, 0.95);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        .toast-notification.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+        }
+
+        @media (max-width: 992px) {
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        // Secure Auth Guard Check
+        if (localStorage.getItem('fe_auth_role') !== 'housekeeper') {
+            window.location.href = './index.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Dynamic Luxury Header -->
+    <header>
+        <div class="logo-area" onclick="window.location.href = './index.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-crown logo-crown"></i>
+            <div>
+                <div class="brand-title">Fisher El Hotel</div>
+                <div class="brand-subtitle">Housekeeping Services</div>
+            </div>
+        </div>
+
+        <!-- Connection toggle & logout buttons -->
+        <div style="display: flex; gap: 15px; align-items: center;">
+
+            <button class="logout-btn-hud" onclick="performLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- Master Container -->
+    <div class="main-container">
+
+        <!-- Status HUD bar -->
+        <div class="status-hud">
+            <div class="user-pill">
+                <div class="avatar-ring" id="userAvatar">H</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.95rem;" id="userProfileName">Fisher El Housekeeping Crew</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);" id="userRoleSub">Housekeeper • housekeeper@fisherel.com</div>
+                </div>
+            </div>
+            <div>
+                <span class="status-pill badge-available" id="jwtStatusText"><i class="fa-solid fa-key"></i> Shared JWT Encoded</span>
+            </div>
+        </div>
+
+        <h2><i class="fa-solid fa-broom"></i> Housekeeping Sanitization log</h2>
+
+        <div class="info-panel">
+            <!-- Rooms requiring work -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: #f59e0b;"><i class="fa-solid fa-soap"></i> Sanitization Cleaning Queue</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Style</th>
+                                <th>Current State</th>
+                                <th>Sanitize Trigger</th>
+                            </tr>
+                        </thead>
+                        <tbody id="housekeeperCleaningTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Log History -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: #f59e0b;"><i class="fa-solid fa-clock-rotate-left"></i> Housekeeping Audit Log</h3>
+                <div class="table-responsive" style="max-height: 400px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Worker</th>
+                                <th>Duty Details</th>
+                                <th>Status</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="housekeepingLogsTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast alert HUD -->
+    <div class="toast-notification" id="toastHUD">
+        <i class="fa-solid fa-envelope-open-text toast-icon"></i>
+        <div>
+            <div style="font-weight: 600; color: var(--accent-gold);" id="toastTitle">System Notification</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);" id="toastMsg">Booking confirmation details dispatched.</div>
+        </div>
+    </div>
+
+    <script>
+        // Core State
+        let isMicroservices = false;
+        const token = localStorage.getItem('fe_auth_token');
+        
+        // Mock DB storage
+        let mockRooms = [];
+        let mockHousekeepingLogs = [];
+
+        // Boot loader
+        window.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                isMicroservices = true;
+            }
+            refreshAllViews();
+        });
+
+        // Load DB from localStorage
+        function loadLocalMockDB() {
+            mockRooms = JSON.parse(localStorage.getItem('fe_mock_rooms')) || [];
+            mockHousekeepingLogs = JSON.parse(localStorage.getItem('fe_mock_housekeeping')) || [];
+        }
+
+        // Load DB from Live API Gateway
+        async function loadLiveMockDB() {
+            try {
+                // Fetch rooms from Live API
+                const roomsResponse = await fetch('http://localhost:8080/api/bookings/rooms', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!roomsResponse.ok) throw new Error('Failed to fetch rooms');
+                mockRooms = await roomsResponse.json();
+
+                // Fetch housekeeping logs from Live API
+                const logsResponse = await fetch('http://localhost:8080/api/housekeeping/logs', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!logsResponse.ok) throw new Error('Failed to fetch housekeeping logs');
+                
+                // Map database timestamp format to standard frontend layout
+                const liveLogs = await logsResponse.json();
+                mockHousekeepingLogs = liveLogs.map(log => ({
+                    id: log.id,
+                    room_id: log.room_id,
+                    room_number: log.room_number,
+                    housekeeper_name: log.housekeeper_name,
+                    task_description: log.task_description,
+                    status: log.status,
+                    timestamp: new Date(log.created_at).toISOString().replace('T', ' ').substring(0, 16)
+                }));
+            } catch (error) {
+                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                isMicroservices = false;
+                updateConnectionBadge();
+                loadLocalMockDB();
+                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+            }
+        }
+
+        // Update connection status badge dynamically in the header HUD
+        function updateConnectionBadge() {
+            const badgeTextEl = document.getElementById('jwtStatusText');
+            if (!badgeTextEl) return;
+            const container = badgeTextEl.parentNode;
+            container.innerHTML = '';
+            
+            // JWT Badge
+            const jwtBadge = document.createElement('span');
+            jwtBadge.className = 'status-pill badge-available';
+            jwtBadge.id = 'jwtStatusText';
+            jwtBadge.innerHTML = `<i class="fa-solid fa-key"></i> Shared JWT Encoded`;
+            container.appendChild(jwtBadge);
+
+            // Connection Badge
+            const connBadge = document.createElement('span');
+            connBadge.className = 'status-pill';
+            if (isMicroservices) {
+                connBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                connBadge.style.color = '#10b981';
+                connBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } else {
+                connBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                connBadge.style.color = '#f59e0b';
+                connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+            container.appendChild(connBadge);
+        }
+
+        // Save DB to localStorage
+        function saveLocalMockDB() {
+            localStorage.setItem('fe_mock_rooms', JSON.stringify(mockRooms));
+            localStorage.setItem('fe_mock_housekeeping', JSON.stringify(mockHousekeepingLogs));
+        }
+
+        // Switch actor roles or logout
+        function performLogout() {
+            localStorage.removeItem('fe_auth_role');
+            localStorage.removeItem('fe_auth_token');
+            localStorage.removeItem('fe_auth_email');
+            localStorage.removeItem('fe_auth_name');
+            window.location.href = './index.html';
+        }
+
+        // Toast alert HUD helper
+        function showToast(title, message) {
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = message;
+            const toast = document.getElementById('toastHUD');
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 4000);
+        }
+
+        async function refreshAllViews() {
+            updateConnectionBadge();
+            if (isMicroservices) {
+                await loadLiveMockDB();
+            } else {
+                loadLocalMockDB();
+            }
+            renderHousekeeperCleaning();
+            renderHousekeepingLogs();
+        }
+
+        // Housekeeper: Render Cleaning queue
+        function renderHousekeeperCleaning() {
+            const tbody = document.getElementById('housekeeperCleaningTable');
+            tbody.innerHTML = '';
+
+            const dirtyRooms = mockRooms.filter(r => r.status === 'Dirty' || r.status === 'Maintenance');
+
+            if (dirtyRooms.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 20px;"><i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i> All hotel rooms are pristine & ready.</td></tr>';
+                return;
+            }
+
+            dirtyRooms.forEach(room => {
+                let badgeClass = 'badge-dirty';
+                if (room.status === 'Maintenance') badgeClass = 'badge-maintenance';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>Room ${room.room_number}</strong></td>
+                        <td>${room.style}</td>
+                        <td><span class="status-pill ${badgeClass}">${room.status}</span></td>
+                        <td>
+                            <div class="flex-actions">
+                                <button class="btn-luxury" style="padding: 6px 12px; font-size: 0.8rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: none;" onclick="triggerSanitize(${room.id}, 'Cleaned')">
+                                    <i class="fa-solid fa-sparkles"></i> Mark Pristine Clean
+                                </button>
+                                <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="triggerSanitize(${room.id}, 'Maintenance')">
+                                    <i class="fa-solid fa-wrench"></i> Hold Maintenance
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Housekeeper: Render Housekeeping Audit Logs Table
+        function renderHousekeepingLogs() {
+            const tbody = document.getElementById('housekeepingLogsTable');
+            tbody.innerHTML = '';
+
+            if (mockHousekeepingLogs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding:20px;">No sanitization audits logged yet.</td></tr>';
+                return;
+            }
+
+            mockHousekeepingLogs.forEach(log => {
+                let badgeClass = 'badge-available';
+                let badgeLabel = log.status;
+                if (log.status === 'Maintenance') badgeClass = 'badge-maintenance';
+                if (log.status === 'Pending Cleanup') { badgeClass = 'badge-dirty'; badgeLabel = '⏳ Pending Cleanup'; }
+
+                const workerDisplay = log.housekeeper_name === 'Pending Assignment'
+                    ? `<span style="font-style: italic; color: var(--color-warning);">${log.housekeeper_name}</span>`
+                    : log.housekeeper_name;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>Room ${log.room_number}</strong></td>
+                        <td>${workerDisplay}</td>
+                        <td><span style="font-size: 0.85rem; color: var(--text-secondary);">${log.task_description}</span></td>
+                        <td><span class="status-pill ${badgeClass}">${badgeLabel}</span></td>
+                        <td style="font-size: 0.8rem; color: var(--text-secondary);">${log.timestamp}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Housekeeper cleans a room (Triggers REST status update to Booking)
+        async function triggerSanitize(roomId, statusChoice) {
+            const room = mockRooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            const housekeeperName = localStorage.getItem('fe_auth_name') || "Fisher El Housekeeping Crew";
+            const desc = statusChoice === 'Cleaned' ? 'Bedding linens replaced & detailed sanitizer sweep completed.' : 'Leaking sink and key card replacement required.';
+
+            if (isMicroservices) {
+                try {
+                    const response = await fetch('http://localhost:8080/api/housekeeping/logs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            room_id: roomId,
+                            room_number: room.room_number,
+                            task_description: desc,
+                            status: statusChoice
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Failed to submit housekeeping log to API.');
+                    }
+
+                    showToast(
+                        "Housekeeping Log Recorded", 
+                        `Room ${room.room_number} status updated successfully via Live API.`
+                    );
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Housekeeping update failed: " + error.message);
+                }
+            } else {
+                // Save housekeeping audit log
+                const newLog = {
+                    id: 500 + mockHousekeepingLogs.length,
+                    room_id: room.id,
+                    room_number: room.room_number,
+                    housekeeper_name: housekeeperName,
+                    task_description: desc,
+                    status: statusChoice,
+                    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                };
+                mockHousekeepingLogs.unshift(newLog);
+
+                // Synchronize status back to Booking Service
+                room.status = (statusChoice === 'Cleaned') ? 'Available' : 'Maintenance';
+                saveLocalMockDB();
+
+                showToast(
+                    "Housekeeping Log Recorded", 
+                    `Room ${room.room_number} status updated to ${room.status}. Synced to Booking pool.`
+                );
+                refreshAllViews();
+            }
+        }
+    </script>
+</body>
+</html>

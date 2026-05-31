@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Login | Fisher El Hotel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #080d1b;
+            --surface: rgba(12, 19, 37, 0.95);
+            --surface-strong: rgba(23, 32, 54, 0.96);
+            --text: #eef2ff;
+            --muted: #8b96ac;
+            --accent: #fcd34d;
+            --accent-hover: #fbbf24;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            background: radial-gradient(circle at top, rgba(252, 212, 82, 0.16), transparent 32%),
+                        linear-gradient(180deg, #0b1222 0%, #05080f 100%);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+        .login-card {
+            width: min(520px, 100%);
+            padding: 36px;
+            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 34px 80px rgba(0,0,0,0.25);
+        }
+        h1 {
+            margin: 0 0 10px;
+            font-size: 2rem;
+        }
+        p {
+            margin: 0 0 28px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        input::placeholder { color: rgba(235, 239, 255, 0.45); }
+        button {
+            border: none;
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); }
+        .btn-primary {
+            background: linear-gradient(135deg, #fcd34d, #f59e0b);
+            color: #0b0d17;
+            width: 100%;
+        }
+        .btn-secondary {
+            margin-top: 14px;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+        .alert {
+            margin-top: 18px;
+            color: var(--danger);
+            display: none;
+        }
+        .page-link {
+            margin-top: 18px;
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <!-- Connection Status Indicator Badge -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <span id="loginConnBadge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--muted); transition: all 0.3s ease;">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Probing Backend...
+            </span>
+        </div>
+        <!-- Login View Container -->
+        <div id="loginView">
+            <h1>Guest Login</h1>
+            <p>Sign in with your guest account to access the luxury booking portal. This login page is dedicated to the guest role only.</p>
+
+            <div class="input-group">
+                <label>Email address</label>
+                <input id="email" type="email" value="guest@fisherel.com" />
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input id="password" type="password" placeholder="password" />
+            </div>
+            <button id="loginBtn" class="btn-primary" onclick="performLogin()">Login as Guest</button>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <span style="color: var(--muted); font-size: 0.95rem;">New to Fisher El? </span>
+                <a href="#" class="page-link" style="display: inline; margin-top: 0; color: var(--accent); font-weight: 600;" onclick="toggleView(true)">Create an Account</a>
+            </div>
+        </div>
+
+        <!-- Register View Container (Hidden by default) -->
+        <div id="registerView" style="display: none;">
+            <h1>Guest Registration</h1>
+            <p>Create a guest account to book rooms, manage reservations, and access premium guest services.</p>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input id="regName" type="text" placeholder="John Doe" />
+            </div>
+            <div class="input-group">
+                <label>Email address</label>
+                <input id="regEmail" type="email" placeholder="john.doe@example.com" />
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input id="regPassword" type="password" placeholder="Min. 6 characters" />
+            </div>
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input id="regConfirmPassword" type="password" placeholder="Repeat password" />
+            </div>
+            <button id="registerBtn" class="btn-primary" onclick="performRegistration()">Register Account</button>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <span style="color: var(--muted); font-size: 0.95rem;">Already have an account? </span>
+                <a href="#" class="page-link" style="display: inline; margin-top: 0; color: var(--accent); font-weight: 600;" onclick="toggleView(false)">Back to Login</a>
+            </div>
+        </div>
+
+        <div id="alert" class="alert"></div>
+        <a class="page-link" href="./index.html" style="text-align: center; margin-top: 24px;">Back to dashboard</a>
+    </div>
+
+    <script>
+        const role = 'guest';
+        const LOGIN_URL = 'http://localhost:8080/api/auth/login';
+        const REGISTER_URL = 'http://localhost:8080/api/auth/register';
+
+        // Auto initialize the local sandbox registry
+        initLocalRegistry();
+        checkConnection();
+
+        function initLocalRegistry() {
+            let users = localStorage.getItem('fe_mock_users');
+            if (!users) {
+                users = [
+                    { name: "Fisher El VIP Guest", email: "guest@fisherel.com", password: "password", role: "guest" },
+                    { name: "Fisher El Front Desk Terminal", email: "receptionist@fisherel.com", password: "password", role: "receptionist" },
+                    { name: "Fisher El Housekeeper", email: "housekeeper@fisherel.com", password: "password", role: "housekeeper" },
+                    { name: "Fisher El General Manager", email: "manager@fisherel.com", password: "password", role: "manager" }
+                ];
+                localStorage.setItem('fe_mock_users', JSON.stringify(users));
+            }
+            return JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
+        }
+
+        function toggleView(showRegister) {
+            const loginEl = document.getElementById('loginView');
+            const registerEl = document.getElementById('registerView');
+            const alertEl = document.getElementById('alert');
+            alertEl.style.display = 'none';
+
+            if (showRegister) {
+                loginEl.style.display = 'none';
+                registerEl.style.display = 'block';
+            } else {
+                loginEl.style.display = 'block';
+                registerEl.style.display = 'none';
+            }
+        }
+
+        async function performLogin() {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const alertEl = document.getElementById('alert');
+            const btn = document.getElementById('loginBtn');
+            alertEl.style.display = 'none';
+
+            if (!email || !password) {
+                alertEl.textContent = 'Enter both email and password.';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            try {
+                // Try live API Gateway
+                const response = await fetch(LOGIN_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Auth failed');
+                }
+                const payload = await response.json();
+                saveSession(payload);window.location.href = './guest-landing.html';
+            } catch (error) {
+                // Fallback to local sandbox user registry
+                const localUsers = initLocalRegistry();
+                const matchedUser = localUsers.find(
+                    u => u.email.toLowerCase() === email && u.password === password && u.role === role
+                );
+
+                if (matchedUser) {
+                    saveLocalSession(matchedUser.email, matchedUser.name);window.location.href = './guest-landing.html';
+                    return;
+                }
+
+                alertEl.textContent = 'Login failed. Verify credentials and ensure the API gateway is running.';
+                alertEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function performRegistration() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            const alertEl = document.getElementById('alert');
+            const btn = document.getElementById('registerBtn');
+            alertEl.style.display = 'none';
+
+            if (!name || !email || !password || !confirm) {
+                alertEl.textContent = 'Please fill out all fields.';
+                alertEl.style.color = 'var(--danger)';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                alertEl.textContent = 'Password must be at least 6 characters.';
+                alertEl.style.color = 'var(--danger)';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirm) {
+                alertEl.textContent = 'Passwords do not match.';
+                alertEl.style.color = 'var(--danger)';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            try {
+                // Try live API registration
+                const response = await fetch(REGISTER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role: 'guest' })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.message || 'Registration failed');
+                }
+
+                // If live registration works, also store locally so they stay in sync
+                saveLocalUser(name, email, password, 'guest');
+
+                alertEl.textContent = 'Registration successful! Redirecting to login...';
+                alertEl.style.color = 'var(--accent)';
+                alertEl.style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('email').value = email;
+                    document.getElementById('password').value = '';
+                    toggleView(false);
+                }, 2000);
+
+            } catch (error) {
+                // Live registration failed (e.g. gateway down), register locally in Sandbox mode
+                const localUsers = initLocalRegistry();
+                if (localUsers.some(u => u.email.toLowerCase() === email)) {
+                    alertEl.textContent = 'Email address is already registered.';
+                    alertEl.style.color = 'var(--danger)';
+                    alertEl.style.display = 'block';
+                    btn.disabled = false;
+                    return;
+                }
+
+                saveLocalUser(name, email, password, 'guest');
+
+                alertEl.textContent = 'Sandbox Registration successful! You can now log in offline.';
+                alertEl.style.color = 'var(--accent)';
+                alertEl.style.display = 'block';
+
+                setTimeout(() => {
+                    document.getElementById('email').value = email;
+                    document.getElementById('password').value = '';
+                    toggleView(false);
+                }, 2000);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function saveLocalUser(name, email, password, userRole) {
+            const localUsers = initLocalRegistry();
+            localUsers.push({ name, email, password, role: userRole });
+            localStorage.setItem('fe_mock_users', JSON.stringify(localUsers));
+        }
+
+        function saveSession(payload) {
+            localStorage.setItem('fe_auth_token', payload.token);
+            localStorage.setItem('fe_auth_role', payload.user.role);
+            localStorage.setItem('fe_auth_email', payload.user.email);
+            localStorage.setItem('fe_auth_name', payload.user.name);
+        }
+
+        function saveLocalSession(email, name) {
+            localStorage.setItem('fe_auth_token', '');
+            localStorage.setItem('fe_auth_role', role);
+            localStorage.setItem('fe_auth_email', email);
+            localStorage.setItem('fe_auth_name', name);
+        }
+
+        async function checkConnection() {
+            const badge = document.getElementById('loginConnBadge');
+            if (!badge) return;
+            try {
+                const response = await fetch(LOGIN_URL, {
+                    method: 'OPTIONS',
+                    headers: { 'Accept': 'application/json' }
+                });
+                badge.style.background = 'rgba(16, 185, 129, 0.12)';
+                badge.style.color = '#34d399';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } catch (error) {
+                badge.style.background = 'rgba(245, 158, 11, 0.12)';
+                badge.style.color = '#fbbf24';
+                badge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+        }
+    </script>
+</body>
+</html>

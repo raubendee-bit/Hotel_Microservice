@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fisher El Hotel</title>
+    <!-- Modern Luxury Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #0b0d17;
+            --bg-surface: rgba(22, 28, 45, 0.6);
+            --bg-surface-solid: #161c2d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --gradient-gold: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #f3e5ab 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #e2c974;
+            --glass-border: rgba(212, 175, 55, 0.15);
+            --shadow-gold: 0 8px 32px 0 rgba(212, 175, 55, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-crown {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+        }
+
+        .brand-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 60px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .grid-portals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .portal-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            transition: var(--transition);
+        }
+
+        .portal-card[data-portal="guest"]::before {
+            background: var(--gradient-gold);
+        }
+
+        .portal-card[data-portal="receptionist"]::before {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+
+        .portal-card[data-portal="housekeeper"]::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .portal-card[data-portal="manager"]::before {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 16px 48px 0 rgba(212, 175, 55, 0.16);
+        }
+
+        .portal-icon {
+            font-size: 3rem;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .portal-card[data-portal="guest"] .portal-icon {
+            color: var(--accent-gold);
+        }
+
+        .portal-card[data-portal="receptionist"] .portal-icon {
+            color: #06b6d4;
+        }
+
+        .portal-card[data-portal="housekeeper"] .portal-icon {
+            color: #f59e0b;
+        }
+
+        .portal-card[data-portal="manager"] .portal-icon {
+            color: #ef4444;
+        }
+
+        .portal-card:hover .portal-icon {
+            transform: scale(1.1);
+        }
+
+        .portal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .portal-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-portal {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .portal-card:hover .btn-portal {
+            background: var(--gradient-gold);
+            color: #0b0d17;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .session-panel {
+            background: rgba(22, 28, 45, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto 30px;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .session-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0b0d17;
+            font-size: 1.1rem;
+        }
+
+        .session-role-badge {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid var(--glass-border);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .session-panel {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .session-info {
+                flex-direction: column;
+            }
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 6px 16px;
+            border-style: solid;
+            border-width: 1px;
+            transition: var(--transition);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-area">
+            <i class="fa-solid fa-crown logo-crown"></i>
+            <div>
+                <div class="brand-title">Fisher El Hotel</div>
+                <div class="brand-subtitle">ERP Suite Gateway</div>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div id="connStatusContainer">
+                <span class="status-pill" id="indexConnBadge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); border-color: rgba(255,255,255,0.1);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Probing Backend...
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+
+        <div class="hero-section">
+            <h1 class="hero-title">Unified ERP Suite</h1>
+            <p class="hero-desc">Securely access role-isolated hotel operations management terminals and booking
+                workflows. Select your designated portal path below.</p>
+        </div>
+
+        <!-- Session Status HUD if already logged in -->
+        <div class="session-panel" id="sessionPanel" style="display: none;">
+            <div class="session-info">
+                <div class="session-avatar" id="sessionAvatar">U</div>
+                <div style="text-align: left;">
+                    <div style="font-weight: 600;" id="sessionName">VIP Guest Account</div>
+                    <span class="session-role-badge" id="sessionRole">Guest Portal</span>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="performLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                Session</button>
+        </div>
+
+        <div class="grid-portals">
+            <!-- Guest Portal -->
+            <div class="portal-card" data-portal="guest" onclick="routeToPortal('guest')">
+                <div>
+                    <div class="portal-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 class="portal-title">Guest Portal</h3>
+                    <p class="portal-desc">Browse room types, verify calendar dates, reserve chambers, and view private
+                        invoices.</p>
+                </div>
+                <button class="btn-portal">Enter Portal</button>
+            </div>
+
+            <!-- Reception Front Desk -->
+            <div class="portal-card" data-portal="receptionist" onclick="routeToPortal('receptionist')">
+                <div>
+                    <div class="portal-icon"><i class="fa-solid fa-bell-concierge"></i></div>
+                    <h3 class="portal-title">Reception Desk</h3>
+                    <p class="portal-desc">Manage guest arrivals, check-in pending stays, audit card keys, and check-out
+                        chambers.</p>
+                </div>
+                <button class="btn-portal">Enter Portal</button>
+            </div>
+
+            <!-- Housekeeping Control -->
+            <div class="portal-card" data-portal="housekeeper" onclick="routeToPortal('housekeeper')">
+                <div>
+                    <div class="portal-icon"><i class="fa-solid fa-broom"></i></div>
+                    <h3 class="portal-title">Housekeeping</h3>
+                    <p class="portal-desc">Sanitize chambers, clean dirty units, hold maintenance, and review
+                        back-of-house logs.</p>
+                </div>
+                <button class="btn-portal">Enter Portal</button>
+            </div>
+
+            <!-- GM analytics -->
+            <div class="portal-card" data-portal="manager" onclick="routeToPortal('manager')">
+                <div>
+                    <div class="portal-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3 class="portal-title">GM Dashboard</h3>
+                    <p class="portal-desc">Review gross hotel revenue, analyze occupancy stats, settle invoices, and
+                        post room charges.</p>
+                </div>
+                <button class="btn-portal">Enter Portal</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Fisher El Hotel Group. Secured via enterprise JWT microservices routing pipelines.</p>
+    </footer>
+
+    <script>
+        // Set mock data defaults on localStorage boot if not exists
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeMockDB();
+            checkSession();
+            checkConnection();
+        });
+
+        function initializeMockDB() {
+            if (!localStorage.getItem('fe_mock_db_saved')) {
+                const defaultRooms = [
+                    { id: 1, room_number: '101', style: 'Standard', status: 'Available', price_per_night: 100.00, room_key: 'KEY-FE-101' },
+                    { id: 2, room_number: '102', style: 'Standard', status: 'Available', price_per_night: 100.00, room_key: 'KEY-FE-102' },
+                    { id: 3, room_number: '201', style: 'Deluxe', status: 'Available', price_per_night: 180.00, room_key: 'KEY-FE-201' },
+                    { id: 4, room_number: '202', style: 'Deluxe', status: 'Available', price_per_night: 180.00, room_key: 'KEY-FE-202' },
+                    { id: 5, room_number: '301', style: 'Family', status: 'Available', price_per_night: 250.00, room_key: 'KEY-FE-301' },
+                    { id: 6, room_number: '302', style: 'Family', status: 'Available', price_per_night: 250.00, room_key: 'KEY-FE-302' },
+                    { id: 7, room_number: '401', style: 'Business Suite', status: 'Available', price_per_night: 450.00, room_key: 'KEY-FE-401' },
+                    { id: 8, room_number: '402', style: 'Business Suite', status: 'Available', price_per_night: 450.00, room_key: 'KEY-FE-402' },
+                ];
+                const defaultBookings = [
+                    { id: 1021, guest_id: 1, guest_name: 'VIP Guest', guest_email: 'guest@fisherel.com', room_id: 3, check_in_date: '2026-05-29', check_out_date: '2026-06-01', price_at_booking: 540.00, status: 'Confirmed' }
+                ];
+                const defaultInvoices = [
+                    { id: 4001, booking_id: 1021, guest_id: 1, guest_name: 'VIP Guest', guest_email: 'guest@fisherel.com', subtotal: 540.00, tax: 64.80, total_amount: 604.80, payment_status: 'Unpaid', payments: [], roomCharges: [{ charge_description: "Fisher El Stay Room Booking Fee", amount: 540.00 }] }
+                ];
+                const defaultHousekeeping = [
+                    { id: 501, room_id: 3, room_number: '201', housekeeper_name: 'Fisher El Housekeeper', task_description: 'Standard cleaning & linen update', status: 'Cleaned', timestamp: '2026-05-29 14:30' }
+                ];
+
+                localStorage.setItem('fe_mock_db_saved', 'true');
+                localStorage.setItem('fe_mock_rooms', JSON.stringify(defaultRooms));
+                localStorage.setItem('fe_mock_bookings', JSON.stringify(defaultBookings));
+                localStorage.setItem('fe_mock_invoices', JSON.stringify(defaultInvoices));
+                localStorage.setItem('fe_mock_housekeeping', JSON.stringify(defaultHousekeeping));
+            }
+        }
+
+        function checkSession() {
+            const role = localStorage.getItem('fe_auth_role');
+            const name = localStorage.getItem('fe_auth_name') || 'User';
+
+            if (role) {
+                document.getElementById('sessionPanel').style.display = 'flex';
+                document.getElementById('sessionName').textContent = name;
+                document.getElementById('sessionRole').textContent = `${role.toUpperCase()} PORTAL`;
+
+                // Color session badge according to role
+                const badge = document.getElementById('sessionRole');
+                const avatar = document.getElementById('sessionAvatar');
+                avatar.textContent = role.charAt(0).toUpperCase();
+
+                if (role === 'guest') {
+                    badge.style.color = 'var(--accent-gold)';
+                    badge.style.borderColor = 'rgba(212,175,55,0.3)';
+                    badge.style.background = 'rgba(212,175,55,0.1)';
+                    avatar.style.background = 'var(--gradient-gold)';
+                } else if (role === 'receptionist') {
+                    badge.style.color = '#06b6d4';
+                    badge.style.borderColor = 'rgba(6,182,212,0.3)';
+                    badge.style.background = 'rgba(6,182,212,0.1)';
+                    avatar.style.background = 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)';
+                } else if (role === 'housekeeper') {
+                    badge.style.color = '#f59e0b';
+                    badge.style.borderColor = 'rgba(245,158,11,0.3)';
+                    badge.style.background = 'rgba(245,158,11,0.1)';
+                    avatar.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                } else if (role === 'manager') {
+                    badge.style.color = '#ef4444';
+                    badge.style.borderColor = 'rgba(239,68,68,0.3)';
+                    badge.style.background = 'rgba(239,68,68,0.1)';
+                    avatar.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                }
+            } else {
+                document.getElementById('sessionPanel').style.display = 'none';
+            }
+        }
+
+        function routeToPortal(targetRole) {
+            const currentRole = localStorage.getItem('fe_auth_role');
+
+            if (currentRole === targetRole) {
+                // User has an active authenticated session for this role
+                window.location.href = `./${targetRole}-landing.html`;
+            } else {
+                // Send them to the dedicated login screen
+                window.location.href = `./${targetRole}-login.html`;
+            }
+        }
+
+        function performLogout() {
+            localStorage.removeItem('fe_auth_role');
+            localStorage.removeItem('fe_auth_token');
+            localStorage.removeItem('fe_auth_email');
+            localStorage.removeItem('fe_auth_name');
+            checkSession();
+        }
+
+        async function checkConnection() {
+            const badge = document.getElementById('indexConnBadge');
+            if (!badge) return;
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'OPTIONS',
+                    headers: { 'Accept': 'application/json' }
+                });
+                badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                badge.style.color = '#10b981';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } catch (error) {
+                badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                badge.style.color = '#f59e0b';
+                badge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                badge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+        }
+    </script>
+</body>
+
+</html>
