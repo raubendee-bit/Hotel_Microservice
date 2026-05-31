@@ -151,7 +151,8 @@ services:
   # =========================================================================
   # 4. FRONTEND STATIC PORTAL
   # =========================================================================
-  - type: static
+  - type: web
+    runtime: static
     name: fe-frontend
     env: static
     publishDir: .
