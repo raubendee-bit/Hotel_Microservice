@@ -1,23 +1,11 @@
-
 services:
-- type: pserv
-    name: fe-mysql-db
-    plan: free
-    env: docker
-    image:
-      url: docker.io/library/mysql:8.0
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        value: rootpassword
-      - key: MYSQL_DATABASE
-        value: fe_hotel_db
-
-  - type: pserv
+  # =======================================================================
+  # 1. BACKEND MICROSERVICES
+  # =======================================================================
+  - type: web
     name: fe-auth-service
-    plan: free
     env: docker
     dockerfilePath: services/auth-service/Dockerfile
-    dockerContext: services/auth-service
     envVars:
       - key: APP_ENV
         value: production
@@ -28,25 +16,22 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: fe-mysql-db
+        value: your-free-db-hostname.com  # 👈 Replace with your free cloud database host
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
         value: fe_hotel_db
       - key: DB_USERNAME
-        value: root
+        value: your_db_user
       - key: DB_PASSWORD
-        value: rootpassword
+        value: your_db_password
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-
-  - type: pserv
+  - type: web
     name: fe-booking-service
-    plan: free
     env: docker
     dockerfilePath: services/booking-service/Dockerfile
-    dockerContext: services/booking-service
     envVars:
       - key: APP_ENV
         value: production
@@ -57,27 +42,24 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: fe-mysql-db
+        value: your-free-db-hostname.com
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
         value: fe_hotel_db
       - key: DB_USERNAME
-        value: root
+        value: your_db_user
       - key: DB_PASSWORD
-        value: rootpassword
+        value: your_db_password
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
 
-
-  - type: pserv
+  - type: web
     name: fe-housekeeping-service
-    plan: free
     env: docker
     dockerfilePath: services/housekeeping-service/Dockerfile
-    dockerContext: services/housekeeping-service
     envVars:
       - key: APP_ENV
         value: production
@@ -88,27 +70,24 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: fe-mysql-db
+        value: your-free-db-hostname.com
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
         value: fe_hotel_db
       - key: DB_USERNAME
-        value: root
+        value: your_db_user
       - key: DB_PASSWORD
-        value: rootpassword
+        value: your_db_password
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: BOOKING_SERVICE_URL
         value: http://fe-booking-service
 
-
-  - type: pserv
+  - type: web
     name: fe-finance-service
-    plan: free
     env: docker
     dockerfilePath: services/finance-service/Dockerfile
-    dockerContext: services/finance-service
     envVars:
       - key: APP_ENV
         value: production
@@ -119,31 +98,30 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: fe-mysql-db
+        value: your-free-db-hostname.com
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
         value: fe_hotel_db
       - key: DB_USERNAME
-        value: root
+        value: your_db_user
       - key: DB_PASSWORD
-        value: rootpassword
+        value: your_db_password
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
-
+  # =======================================================================
+  # 2. API GATEWAY ROUTER
+  # =======================================================================
   - type: web
     name: fe-api-gateway
-    plan: free
     env: docker
     dockerfilePath: api-gateway/Dockerfile
-    dockerContext: api-gateway
 
-
-  services:
-  - type: web          
-    runtime: static    
-    name: frontend-dashboard
-    env: static
-    buildCommand: ""   
-    publishDir: "."
+  # =======================================================================
+  # 3. FRONTEND STATIC PORTAL
+  # =======================================================================
+  - type: web
+    runtime: static
+    name: fe-frontend
+    staticPublishPath: .
