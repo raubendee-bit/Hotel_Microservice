@@ -9,7 +9,7 @@
 
 services:
   # =========================================================================
-  # 1. AUTH MICROSERVICE
+  # 1. AUTH MICROSERVICE (services[0])
   # =========================================================================
   - type: web
     name: fe-auth-service
@@ -27,7 +27,7 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: your-free-db-hostname.com  # 👈 Connect your external free cloud DB here
+        value: your-free-db-hostname.com
       - key: DB_PORT
         value: "3306"
       - key: DB_DATABASE
@@ -40,7 +40,7 @@ services:
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
   # =========================================================================
-  # 2. BOOKING MICROSERVICE
+  # 2. BOOKING MICROSERVICE (services[1])
   # =========================================================================
   - type: web
     name: fe-booking-service
@@ -71,8 +71,9 @@ services:
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
       - key: FINANCE_SERVICE_URL
         value: http://fe-finance-service
+
   # =========================================================================
-  # 3. HOUSEKEEPING MICROSERVICE
+  # 3. HOUSEKEEPING MICROSERVICE (services[2])
   # =========================================================================
   - type: web
     name: fe-housekeeping-service
@@ -89,4 +90,66 @@ services:
         value: "false"
       - key: DB_CONNECTION
         value: mysql
-      - key: DB
+      - key: DB_HOST
+        value: your-free-db-hostname.com
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: your_db_user
+      - key: DB_PASSWORD
+        value: your_db_password
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+      - key: BOOKING_SERVICE_URL
+        value: http://fe-booking-service
+
+  # =========================================================================
+  # 4. FINANCE MICROSERVICE (services[3])
+  # =========================================================================
+  - type: web
+    name: fe-finance-service
+    plan: free
+    env: docker
+    dockerfilePath: services/finance-service/Dockerfile
+    dockerContext: services/finance-service
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: your-free-db-hostname.com
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: your_db_user
+      - key: DB_PASSWORD
+        value: your_db_password
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+
+  # =======================================================================
+  # 5. API GATEWAY ROUTER (services[4])
+  # =======================================================================
+  - type: web
+    name: fe-api-gateway
+    plan: free
+    env: docker
+    dockerfilePath: api-gateway/Dockerfile
+    dockerContext: api-gateway
+
+  # =======================================================================
+  # 6. FRONTEND STATIC PORTAL (services[5])
+  # =======================================================================
+  - type: web
+    runtime: static
+    name: fe-frontend
+    staticPublishPath: .
