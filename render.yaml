@@ -1,8 +1,8 @@
 services:
   # =======================================================================
-  # 1. UNIFIED DATABASE (Using Docker Image to stay entirely Free)
+  # 1. UNIFIED DATABASE (Changed to 'worker' to bypass the payment wall)
   # =======================================================================
-  - type: pserv
+  - type: worker       #  Changed from pserv to worker (FREE)
     name: fe-mysql-db
     env: image
     image:
