@@ -10,7 +10,7 @@
 
 services:
   # =========================================================================
-  # 1. AUTH MICROSERVICE (Internal Cluster Routing via Web App Routing)
+  # 1. AUTH MICROSERVICE
   # =========================================================================
   - type: web
     name: fe-auth-service
@@ -156,9 +156,9 @@ services:
     dockerContext: api-gateway
 
   # =========================================================================
-  # 6. FRONTEND STATIC PORTAL (Cleanly formatted Static Site type)
+  # 6. FRONTEND STATIC PORTAL (Correct Blueprint mapping for static deployments)
   # =========================================================================
-  - type: static
+  - type: static_site
     name: fe-frontend
     buildCommand: ""
     staticPublishPath: .
