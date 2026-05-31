@@ -10,9 +10,9 @@
 
 services:
   # =========================================================================
-  # 1. AUTH MICROSERVICE (Private — internal only)
+  # 1. AUTH MICROSERVICE (Internal Cluster Routing via Web App Routing)
   # =========================================================================
-  - type: pserv
+  - type: web
     name: fe-auth-service
     plan: free
     env: docker
@@ -28,24 +28,24 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: fisherel-mysql-rauben-e651.l.aivencloud.com       # e.g. mysql-fisherel.aivencloud.com
+        value: fisherel-mysql-rauben-e651.l.aivencloud.com
       - key: DB_PORT
-        value: "13010"     # e.g. 12345
+        value: "13010"
       - key: DB_DATABASE
-        value: defaultdb             # Aiven default database name
+        value: defaultdb
       - key: DB_USERNAME
-        value: avnadmin              # Aiven default username
+        value: avnadmin
       - key: DB_PASSWORD
-        value: AVNS_UVwkFI6wmgFkQKproEp   # from Aiven Overview tab
+        value: AVNS_UVwkFI6wmgFkQKproEp
       - key: MYSQL_ATTR_SSL_CA
-        value: /etc/ssl/certs/ca-certificates.crt  # Use system CA bundle for Aiven SSL
+        value: /etc/ssl/certs/ca-certificates.crt
       - key: JWT_SECRET
         value: fisherel_jwt_secret_key_extremely_secure_key_12345
 
   # =========================================================================
-  # 2. BOOKING MICROSERVICE (Private — internal only)
+  # 2. BOOKING MICROSERVICE
   # =========================================================================
-  - type: pserv
+  - type: web
     name: fe-booking-service
     plan: free
     env: docker
@@ -78,9 +78,9 @@ services:
         value: http://fe-finance-service
 
   # =========================================================================
-  # 3. HOUSEKEEPING MICROSERVICE (Private — internal only)
+  # 3. HOUSEKEEPING MICROSERVICE
   # =========================================================================
-  - type: pserv
+  - type: web
     name: fe-housekeeping-service
     plan: free
     env: docker
@@ -113,9 +113,9 @@ services:
         value: http://fe-booking-service
 
   # =========================================================================
-  # 4. FINANCE MICROSERVICE (Private — internal only)
+  # 4. FINANCE MICROSERVICE
   # =========================================================================
-  - type: pserv
+  - type: web
     name: fe-finance-service
     plan: free
     env: docker
@@ -156,10 +156,9 @@ services:
     dockerContext: api-gateway
 
   # =========================================================================
-  # 6. FRONTEND STATIC PORTAL
+  # 6. FRONTEND STATIC PORTAL (Cleanly formatted Static Site type)
   # =========================================================================
-  service: static
-  - type: web
+  - type: static
     name: fe-frontend
     buildCommand: ""
     staticPublishPath: .
