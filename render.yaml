@@ -1,0 +1,157 @@
+# 🚀 Render Blueprint Specification for Fisher El Hotel ERP Suite
+#
+# This blueprint defines the entire multi-service stack on Render.
+# To deploy, connect your GitHub repository to Render and it will automatically
+# spin up the frontend, backend microservices, Nginx API Gateway, and database.
+
+services:
+  # =========================================================================
+  # 1. UNIFIED DATABASE (Consolidated to save memory and stay under Free tier)
+  # =========================================================================
+  - type: pserv
+    name: fe-mysql-db
+    env: docker
+    dockerfile: Dockerfile
+    # We use an inline docker command or custom setup if needed, 
+    # but official mysql:8.0 works perfectly as a Private Service.
+    repo: https://github.com/docker-library/mysql
+    branch: master
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: rootpassword
+      - key: MYSQL_DATABASE
+        value: fe_hotel_db # We can house all tables or schemas here
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1 # Requires Render paid tier for persistent disk, otherwise data resets on restart.
+
+  # =========================================================================
+  # 2. MICROSERVICES
+  # =========================================================================
+  - type: web
+    name: fe-auth-service
+    env: docker
+    dockerfilePath: services/auth-service/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:fH7+9uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9z0=
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: fe-mysql-db
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: rootpassword
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+
+  - type: web
+    name: fe-booking-service
+    env: docker
+    dockerfilePath: services/booking-service/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:qW8+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9a1=
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: fe-mysql-db
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: rootpassword
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+      - key: FINANCE_SERVICE_URL
+        value: http://fe-finance-service
+
+  - type: web
+    name: fe-housekeeping-service
+    env: docker
+    dockerfilePath: services/housekeeping-service/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:zX3+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9b2=
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: fe-mysql-db
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: rootpassword
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+      - key: BOOKING_SERVICE_URL
+        value: http://fe-booking-service
+
+  - type: web
+    name: fe-finance-service
+    env: docker
+    dockerfilePath: services/finance-service/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: fe-mysql-db
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: fe_hotel_db
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: rootpassword
+      - key: JWT_SECRET
+        value: fisherel_jwt_secret_key_extremely_secure_key_12345
+
+  # =========================================================================
+  # 3. API GATEWAY ROUTER
+  # =========================================================================
+  - type: web
+    name: fe-api-gateway
+    env: docker
+    dockerfilePath: api-gateway/Dockerfile
+    ports:
+      - port: 80
+        protocol: tcp
+
+  # =========================================================================
+  # 4. FRONTEND STATIC PORTAL
+  # =========================================================================
+  - type: static
+    name: fe-frontend
+    env: static
+    publishDir: .
