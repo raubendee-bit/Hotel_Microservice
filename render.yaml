@@ -166,7 +166,7 @@ services:
   # =========================================================================
   # 7. FRONTEND STATIC PORTAL
   # =========================================================================
-  - type: static
+  - type: web
+    runtime: static
     name: fe-frontend
-    buildCommand: ""
     staticPublishPath: .
