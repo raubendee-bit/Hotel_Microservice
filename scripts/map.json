@@ -1,0 +1,7 @@
+{
+  "api-gateway": "https://api-gateway-example.onrender.com",
+  "auth-service": "https://auth-service-example.onrender.com",
+  "booking-service": "https://booking-service-example.onrender.com",
+  "finance-service": "https://finance-service-example.onrender.com",
+  "housekeeping-service": "https://housekeeping-service-example.onrender.com"
+}
