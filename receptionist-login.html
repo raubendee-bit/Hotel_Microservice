@@ -157,21 +157,6 @@
                 const payload = await response.json();
                 saveSession(payload);window.location.href = './receptionist-landing.html';
             } catch (error) {
-                // Fallback to local sandbox user registry
-                const localUsers = JSON.parse(localStorage.getItem('fe_mock_users') || "[]");
-                const matchedUser = localUsers.find(
-                    u => u.email.toLowerCase() === email && u.password === password && u.role === role
-                );
-
-                if (matchedUser) {
-                    saveLocalSession(matchedUser.email, matchedUser.name);window.location.href = './receptionist-landing.html';
-                    return;
-                }
-
-                if (email === fallback.email && password === fallback.password) {
-                    saveLocalSession(fallback.email, 'Fisher El Front Receptionist');window.location.href = './receptionist-landing.html';
-                    return;
-                }
                 alertEl.textContent = 'Login failed. Verify credentials and ensure the API gateway is running.';
                 alertEl.style.display = 'block';
             } finally {
@@ -184,13 +169,6 @@
             localStorage.setItem('fe_auth_role', payload.user.role);
             localStorage.setItem('fe_auth_email', payload.user.email);
             localStorage.setItem('fe_auth_name', payload.user.name);
-        }
-
-        function saveLocalSession(email, name) {
-            localStorage.setItem('fe_auth_token', '');
-            localStorage.setItem('fe_auth_role', role);
-            localStorage.setItem('fe_auth_email', email);
-            localStorage.setItem('fe_auth_name', name);
         }
 
         async function checkConnection() {

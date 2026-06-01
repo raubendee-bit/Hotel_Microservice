@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Ensure storage and bootstrap directories are present and writable
 mkdir -p /var/www/html/bootstrap/cache
@@ -8,7 +9,7 @@ mkdir -p /var/www/html/storage/framework/cache
 mkdir -p /var/www/html/storage/logs
 chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
-# Run migrations (we set force because it's running in production mode)
+# Run migrations (force because this container may run in non-interactive mode)
 php artisan migrate --force || true
 
 # Start php-fpm in background

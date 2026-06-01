@@ -9,8 +9,8 @@ Route::middleware(\App\Http\Middleware\VerifyMicroserviceJwt::class)->group(func
     
     Route::get('/bookings', [BookingController::class, 'getBookings']);
     Route::post('/bookings', [BookingController::class, 'createBooking']);
-    Route::post('/bookings/{bookingId}/cancel', [BookingController::class, 'cancelBooking']);
+    Route::post('/{bookingId}/cancel', [BookingController::class, 'cancelBooking']);
     
-    Route::post('/bookings/{bookingId}/checkin', [BookingController::class, 'checkIn']);
-    Route::post('/bookings/{bookingId}/checkout', [BookingController::class, 'checkOut']);
+    Route::post('/{bookingId}/checkin', [BookingController::class, 'checkIn']);
+    Route::post('/{bookingId}/checkout', [BookingController::class, 'checkOut']);
 });

@@ -313,6 +313,15 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
+        tr.reserved-row td {
+            background: rgba(139, 92, 246, 0.05);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        tr.reserved-row:hover td {
+            background: rgba(139, 92, 246, 0.08);
+        }
+
         /* Action Buttons Grid */
         .flex-actions {
             display: flex;
@@ -616,7 +625,7 @@
                 mockRooms = await roomsResponse.json();
 
                 // Fetch bookings from Live API
-                const bookingsResponse = await fetch('/api/bookings/bookings', {
+                const bookingsResponse = await fetch('/api/bookings', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
@@ -630,11 +639,13 @@
                     mockInvoices = await invoicesResponse.json();
                 }
             } catch (error) {
-                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                console.error("Live microservices fetch error:", error);
                 isMicroservices = false;
                 updateConnectionBadge();
-                loadLocalMockDB();
-                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+                mockRooms = [];
+                mockBookings = [];
+                mockInvoices = [];
+                showToast("Live API unavailable", "Could not reach the backend gateway. Start the services and reload the dashboard.");
             }
         }
 
@@ -668,7 +679,7 @@
                 connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
                 connBadge.style.borderStyle = 'solid';
                 connBadge.style.borderWidth = '1px';
-                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+                connBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Live API unavailable`;
             }
             container.appendChild(connBadge);
         }
@@ -711,11 +722,7 @@
 
         async function refreshAllViews() {
             updateConnectionBadge();
-            if (isMicroservices) {
-                await loadLiveMockDB();
-            } else {
-                loadLocalMockDB();
-            }
+            await loadLiveMockDB();
             renderReceptionBookings();
             renderReceptionRooms();
         }
@@ -788,8 +795,9 @@
                 if (room.status === 'Maintenance') badgeClass = 'badge-maintenance';
                 if (room.status === 'Reserved') badgeClass = 'badge-reserved';
 
+                const rowClass = room.status === 'Reserved' ? 'class="reserved-row"' : '';
                 tbody.innerHTML += `
-                    <tr>
+                    <tr ${rowClass}>
                         <td><strong>Room ${room.room_number}</strong></td>
                         <td>${room.style}</td>
                         <td><span class="status-pill ${badgeClass}">${room.status}</span></td>
@@ -842,7 +850,7 @@
         async function receptionistCheckIn(bookingId) {
             if (isMicroservices) {
                 try {
-                    const response = await fetch(`/api/bookings/bookings/${bookingId}/checkin`, {
+                    const response = await fetch(`/api/bookings/${bookingId}/checkin`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -901,7 +909,7 @@
         async function receptionistCancel(bookingId) {
             if (isMicroservices) {
                 try {
-                    const response = await fetch(`/api/bookings/bookings/${bookingId}/cancel`, {
+                    const response = await fetch(`/api/bookings/${bookingId}/cancel`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -936,7 +944,7 @@
         async function receptionistCheckOut(bookingId) {
             if (isMicroservices) {
                 try {
-                    const response = await fetch(`/api/bookings/bookings/${bookingId}/checkout`, {
+                    const response = await fetch(`/api/bookings/${bookingId}/checkout`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`

@@ -14,6 +14,6 @@ class HousekeepingLog extends Model
         'housekeeper_id',
         'housekeeper_name',
         'task_description',
-        'status' // Assigned, Cleaned, Maintenance
+        'status' // Pending Cleanup, Cleaned, Maintenance
     ];
 }

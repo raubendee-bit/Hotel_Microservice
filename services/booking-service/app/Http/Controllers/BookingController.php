@@ -19,7 +19,7 @@ class BookingController extends Controller
         $room = Room::findOrFail($roomId);
         
         $request->validate([
-            'status' => 'required|in:Available,Occupied,Dirty,Maintenance'
+            'status' => 'required|in:Available,Reserved,Occupied,Dirty,Maintenance'
         ]);
 
         $room->status = $request->status;
@@ -52,14 +52,22 @@ class BookingController extends Controller
         ]);
 
         $room = Room::findOrFail($request->room_id);
+
+        if ($room->status !== 'Available') {
+            return response()->json([
+                'error' => 'This room is currently ' . $room->status . ' and cannot be booked until it is available.'
+            ], 422);
+        }
         
-        // Double-booking check
+        // Double-booking check: only conflict with active Pending/Confirmed bookings
+        // that actually overlap the requested date range AND have not already ended
+        $today = now()->toDateString();
         $conflicting = Booking::where('room_id', $request->room_id)
-            ->where('status', '!=', 'Cancelled')
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('check_in_date', [$request->check_in_date, $request->check_out_date])
-                      ->orWhereBetween('check_out_date', [$request->check_in_date, $request->check_out_date]);
-            })->exists();
+            ->whereIn('status', ['Pending', 'Confirmed'])
+            ->where('check_out_date', '>', $today)           // Ignore stale past bookings
+            ->where('check_in_date', '<', $request->check_out_date)  // Proper overlap:
+            ->where('check_out_date', '>', $request->check_in_date)  //   start1 < end2 AND end1 > start2
+            ->exists();
 
         if ($conflicting) {
             return response()->json(['error' => 'This room is already booked for the selected dates'], 422);
@@ -84,6 +92,9 @@ class BookingController extends Controller
             'status' => 'Pending'
         ]);
 
+        $room->status = 'Reserved';
+        $room->save();
+
         return response()->json([
             'message' => 'Booking created successfully',
             'booking' => $booking
@@ -103,10 +114,13 @@ class BookingController extends Controller
         $booking->status = 'Cancelled';
         $booking->save();
 
-        // Release room if it was checked in
+        // Release room if it was checked in or reserved
         $room = Room::findOrFail($booking->room_id);
         if ($room->status === 'Occupied') {
             $room->status = 'Dirty';
+            $room->save();
+        } elseif ($room->status === 'Reserved') {
+            $room->status = 'Available';
             $room->save();
         }
 
@@ -203,11 +217,26 @@ class BookingController extends Controller
         $booking->save();
 
         $room = Room::findOrFail($booking->room_id);
-        $room->status = 'Dirty';
+        $room->status = 'Dirty'; // Triggers housekeeping sanitization queue
         $room->save();
 
+        // Cross-service call: create a pending housekeeping task for the vacated room.
+        $housekeepingUrl = env('HOUSEKEEPING_SERVICE_URL', 'http://fe-housekeeping-service');
+        try {
+            Http::withHeaders([
+                'Authorization' => $request->header('Authorization')
+            ])->post($housekeepingUrl . '/api/logs', [
+                'room_id' => $room->id,
+                'room_number' => $room->room_number,
+                'task_description' => 'Post-checkout sanitization required. Room ' . $room->room_number . ' was vacated by ' . $booking->guest_name . '.',
+                'status' => 'Pending Cleanup'
+            ]);
+        } catch (\Exception $e) {
+            // Log connection warning but keep checkout completed; the Dirty status still flags the room.
+        }
+
         return response()->json([
-            'message' => 'Check-out completed successfully. Room ' . $room->room_number . ' is dirty and has been released to housekeeping.',
+            'message' => 'Check-out completed. Room ' . $room->room_number . ' has been released to housekeeping for sanitization.',
             'booking' => $booking
         ]);
     }

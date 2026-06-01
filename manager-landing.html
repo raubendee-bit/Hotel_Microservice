@@ -859,7 +859,7 @@
                 mockRooms = await roomsResponse.json();
 
                 // Fetch bookings from Live API
-                const bookingsResponse = await fetch('/api/bookings/bookings', {
+                const bookingsResponse = await fetch('/api/bookings', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
@@ -882,11 +882,14 @@
                     liveAnalytics = null;
                 }
             } catch (error) {
-                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                console.error("Live microservices fetch error:", error);
                 isMicroservices = false;
                 updateConnectionBadge();
-                loadLocalMockDB();
-                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+                mockRooms = [];
+                mockBookings = [];
+                mockInvoices = [];
+                liveAnalytics = null;
+                showToast("Live API unavailable", "Could not reach the backend gateway. Start the services and reload the dashboard.");
             }
         }
 
@@ -920,7 +923,7 @@
                 connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
                 connBadge.style.borderStyle = 'solid';
                 connBadge.style.borderWidth = '1px';
-                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+                connBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Live API unavailable`;
             }
             container.appendChild(connBadge);
         }
@@ -963,11 +966,7 @@
 
         async function refreshAllViews() {
             updateConnectionBadge();
-            if (isMicroservices) {
-                await loadLiveMockDB();
-            } else {
-                loadLocalMockDB();
-            }
+            await loadLiveMockDB();
             renderManagerInvoices();
             renderManagerStaff();
             calculateManagerAnalytics();

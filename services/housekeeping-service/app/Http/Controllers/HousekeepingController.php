@@ -24,21 +24,27 @@ class HousekeepingController extends Controller
             'room_id' => 'required|integer',
             'room_number' => 'required|string',
             'task_description' => 'required|string',
-            'status' => 'required|in:Cleaned,Maintenance'
+            'status' => 'required|in:Pending Cleanup,Cleaned,Maintenance'
         ]);
+
+        $isPendingCleanup = $request->status === 'Pending Cleanup';
 
         $log = HousekeepingLog::create([
             'room_id' => $request->room_id,
             'room_number' => $request->room_number,
-            'housekeeper_id' => $request->attributes->get('user_id'),
-            'housekeeper_name' => $request->attributes->get('user_name') ?? 'Housekeeper Staff',
+            'housekeeper_id' => $isPendingCleanup ? null : $request->attributes->get('user_id'),
+            'housekeeper_name' => $isPendingCleanup ? 'Pending Assignment' : ($request->attributes->get('user_name') ?? 'Housekeeper Staff'),
             'task_description' => $request->task_description,
             'status' => $request->status
         ]);
 
         // Cross-service call: Update Room Status in Booking Service
         $bookingUrl = env('BOOKING_SERVICE_URL', 'http://lf-booking-service');
-        $targetStatus = ($request->status === 'Cleaned') ? 'Available' : 'Maintenance';
+        $targetStatus = match ($request->status) {
+            'Cleaned' => 'Available',
+            'Maintenance' => 'Maintenance',
+            default => 'Dirty',
+        };
 
         try {
             Http::withHeaders([

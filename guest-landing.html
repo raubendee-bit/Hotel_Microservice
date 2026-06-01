@@ -330,6 +330,16 @@
             border-color: var(--accent-gold);
         }
 
+        .room-card.reserved {
+            border-color: rgba(139, 92, 246, 0.35);
+            background: rgba(18, 14, 30, 0.7);
+        }
+
+        .room-card.reserved:hover {
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.18);
+        }
+
         .room-image-stub {
             height: 180px;
             background: linear-gradient(45deg, #161c2d 0%, #272f44 100%);
@@ -723,7 +733,7 @@
                 mockRooms = await roomsResponse.json();
 
                 // Fetch bookings from Live API
-                const bookingsResponse = await fetch('/api/bookings/bookings', {
+                const bookingsResponse = await fetch('/api/bookings', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
@@ -745,11 +755,13 @@
                     }
                 }
             } catch (error) {
-                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                console.error("Live microservices fetch error:", error);
                 isMicroservices = false;
                 updateConnectionBadge();
-                loadLocalMockDB();
-                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+                mockRooms = [];
+                mockBookings = [];
+                mockInvoices = [];
+                showToast("Live API unavailable", "Could not reach the backend gateway. Start the services and reload the dashboard.");
             }
         }
 
@@ -781,7 +793,7 @@
                 connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
                 connBadge.style.borderStyle = 'solid';
                 connBadge.style.borderWidth = '1px';
-                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+                connBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Live API unavailable`;
             }
             container.appendChild(connBadge);
         }
@@ -824,11 +836,7 @@
 
         async function refreshAllViews() {
             updateConnectionBadge();
-            if (isMicroservices) {
-                await loadLiveMockDB();
-            } else {
-                loadLocalMockDB();
-            }
+            await loadLiveMockDB();
             refreshRoomAvailability();
             renderGuestBookings();
         }
@@ -844,8 +852,10 @@
             }
 
             mockRooms.forEach(room => {
+                const effectiveStatus = room.status;
+
                 const card = document.createElement('div');
-                card.className = 'room-card';
+                card.className = effectiveStatus === 'Reserved' ? 'room-card reserved' : 'room-card';
 
                 let icon = 'fa-bed';
                 if (room.style === 'Deluxe') icon = 'fa-award';
@@ -853,19 +863,19 @@
                 if (room.style === 'Business Suite') icon = 'fa-crown';
 
                 let badgeClass = 'badge-available';
-                if (room.status === 'Occupied') badgeClass = 'badge-occupied';
-                if (room.status === 'Dirty') badgeClass = 'badge-dirty';
-                if (room.status === 'Maintenance') badgeClass = 'badge-maintenance';
-                if (room.status === 'Reserved') badgeClass = 'badge-reserved';
+                if (effectiveStatus === 'Occupied') badgeClass = 'badge-occupied';
+                if (effectiveStatus === 'Maintenance') badgeClass = 'badge-maintenance';
+                if (effectiveStatus === 'Reserved') badgeClass = 'badge-reserved';
+                if (effectiveStatus === 'Dirty') badgeClass = 'badge-dirty';
 
                 // Check if THIS user is the one who reserved this room
                 const currentEmail = (localStorage.getItem('fe_auth_email') || '').toLowerCase();
-                const myReservation = room.status === 'Reserved'
+                const myReservation = effectiveStatus === 'Reserved'
                     ? mockBookings.find(b => b.room_id === room.id && b.status === 'Pending' && b.guest_email && b.guest_email.toLowerCase() === currentEmail)
                     : null;
 
                 let reservedNote = '';
-                if (room.status === 'Reserved') {
+                if (effectiveStatus === 'Reserved') {
                     if (myReservation) {
                         reservedNote = `<div style="margin-bottom: 10px; padding: 8px 12px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; font-size: 0.8rem; color: #a78bfa; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-circle-check"></i> <span><strong>Your Reservation</strong> — Awaiting front desk check-in</span>
@@ -875,12 +885,16 @@
                             <i class="fa-solid fa-user-secret"></i> <span>Reserved by a guest &mdash; <em>identity confidential</em></span>
                         </div>`;
                     }
+                } else if (room.status === 'Dirty') {
+                    reservedNote = `<div style="margin-bottom: 10px; padding: 8px 12px; background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.15); border-radius: 8px; font-size: 0.8rem; color: #6ee7b7; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-broom"></i> <span>Recently vacated — housekeeping scheduled before your arrival</span>
+                    </div>`;
                 }
 
                 let actionBtn = '';
-                if (room.status === 'Available') {
+                if (effectiveStatus === 'Available') {
                     actionBtn = `<button class="btn-luxury" style="width: 100%;" onclick="bookRoom(${room.id})"><i class="fa-solid fa-bookmark"></i> Book Now</button>`;
-                } else if (room.status === 'Reserved') {
+                } else if (effectiveStatus === 'Reserved') {
                     if (myReservation) {
                         actionBtn = `<button class="btn-secondary" style="width: 100%; cursor: not-allowed; background: rgba(139, 92, 246, 0.2); color: #a78bfa; border-color: rgba(139, 92, 246, 0.4); font-weight: 600;" disabled><i class="fa-solid fa-circle-check"></i> Your Booking Pending</button>`;
                     } else {
@@ -890,13 +904,15 @@
                     actionBtn = `<button class="btn-secondary" style="width: 100%; cursor: not-allowed;" disabled><i class="fa-solid fa-circle-ban"></i> Unavailable</button>`;
                 }
 
+                const displayStatus = effectiveStatus;
+
                 card.innerHTML = `
                     <div class="room-image-stub">
                         <i class="fa-solid ${icon}"></i>
                         <span class="room-price-tag">₱${Number(room.price_per_night).toFixed(2)} / Night</span>
                     </div>
                     <div class="room-card-body">
-                        <span class="room-badge ${badgeClass}">${room.status}</span>
+                        <span class="room-badge ${badgeClass}">${displayStatus}</span>
                         <h4 class="room-card-title">${room.style} (Room ${room.room_number})</h4>
                         <p class="room-card-desc">Experience royal high-class comfort in Fisher El wing. Fitted with state of the art air conditioning, keyless card locks, and premium views.</p>
                         ${reservedNote}
@@ -924,7 +940,7 @@
 
             if (isMicroservices) {
                 try {
-                    const response = await fetch('/api/bookings/bookings', {
+                    const response = await fetch('/api/bookings', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

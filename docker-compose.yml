@@ -1,3 +1,10 @@
+x-app-healthcheck: &app-healthcheck
+  test: ["CMD-SHELL", "curl -f http://127.0.0.1/ || exit 1"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 15s
+
 networks:
   fisherel-network:
     driver: bridge
@@ -11,10 +18,11 @@ services:
     container_name: fe-auth-db
     restart: always
     environment:
-      MYSQL_DATABASE: fe_auth_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "33061:3306"
+      MYSQL_DATABASE: ${AUTH_DB_NAME:-fe_auth_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${AUTH_DB_USER:-root}
+      MYSQL_PASSWORD: ${AUTH_DB_PASSWORD:-rootpassword}
+      MYSQL_ROOT_HOST: '%'
     volumes:
       - auth_db_data:/var/lib/mysql
     networks:
@@ -25,10 +33,11 @@ services:
     container_name: fe-booking-db
     restart: always
     environment:
-      MYSQL_DATABASE: fe_booking_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "33062:3306"
+      MYSQL_DATABASE: ${BOOKING_DB_NAME:-fe_booking_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${BOOKING_DB_USER:-root}
+      MYSQL_PASSWORD: ${BOOKING_DB_PASSWORD:-rootpassword}
+      MYSQL_ROOT_HOST: '%'
     volumes:
       - booking_db_data:/var/lib/mysql
     networks:
@@ -39,10 +48,11 @@ services:
     container_name: fe-housekeeping-db
     restart: always
     environment:
-      MYSQL_DATABASE: fe_housekeeping_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "33063:3306"
+      MYSQL_DATABASE: ${HOUSEKEEPING_DB_NAME:-fe_housekeeping_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${HOUSEKEEPING_DB_USER:-root}
+      MYSQL_PASSWORD: ${HOUSEKEEPING_DB_PASSWORD:-rootpassword}
+      MYSQL_ROOT_HOST: '%'
     volumes:
       - housekeeping_db_data:/var/lib/mysql
     networks:
@@ -53,10 +63,11 @@ services:
     container_name: fe-finance-db
     restart: always
     environment:
-      MYSQL_DATABASE: fe_finance_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "33064:3306"
+      MYSQL_DATABASE: ${FINANCE_DB_NAME:-fe_finance_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${FINANCE_DB_USER:-root}
+      MYSQL_PASSWORD: ${FINANCE_DB_PASSWORD:-rootpassword}
+      MYSQL_ROOT_HOST: '%'
     volumes:
       - finance_db_data:/var/lib/mysql
     networks:
@@ -72,19 +83,20 @@ services:
     container_name: fe-auth-service
     restart: always
     environment:
-      - APP_NAME=Fisher-El-Auth-Service
-      - APP_ENV=local
-      - APP_KEY=base64:fH7+9uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9z0=
-      - APP_DEBUG=true
+      - APP_NAME=${AUTH_APP_NAME:-Fisher-El-Auth-Service}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${AUTH_APP_KEY:-base64:fH7+9uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9z0=}
+      - APP_DEBUG=${APP_DEBUG:-false}
       - DB_CONNECTION=mysql
       - DB_HOST=auth-db
       - DB_PORT=3306
-      - DB_DATABASE=fe_auth_db
-      - DB_USERNAME=root
-      - DB_PASSWORD=rootpassword
-      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+      - DB_DATABASE=${AUTH_DB_NAME:-fe_auth_db}
+      - DB_USERNAME=${AUTH_DB_USER:-root}
+      - DB_PASSWORD=${AUTH_DB_PASSWORD:-rootpassword}
+      - JWT_SECRET=${AUTH_JWT_SECRET:-fisherel_jwt_secret_key_extremely_secure_key_12345}
     depends_on:
       - auth-db
+    healthcheck: *app-healthcheck
     networks:
       - fisherel-network
 
@@ -95,20 +107,23 @@ services:
     container_name: fe-booking-service
     restart: always
     environment:
-      - APP_NAME=Fisher-El-Booking-Service
-      - APP_ENV=local
-      - APP_KEY=base64:qW8+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9a1=
-      - APP_DEBUG=true
+      - APP_NAME=${BOOKING_APP_NAME:-Fisher-El-Booking-Service}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${BOOKING_APP_KEY:-base64:qW8+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9a1=}
+      - APP_DEBUG=${APP_DEBUG:-false}
       - DB_CONNECTION=mysql
       - DB_HOST=booking-db
       - DB_PORT=3306
-      - DB_DATABASE=fe_booking_db
-      - DB_USERNAME=root
-      - DB_PASSWORD=rootpassword
-      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
-      - FINANCE_SERVICE_URL=http://fe-finance-service
+      - DB_DATABASE=${BOOKING_DB_NAME:-fe_booking_db}
+      - DB_USERNAME=${BOOKING_DB_USER:-root}
+      - DB_PASSWORD=${BOOKING_DB_PASSWORD:-rootpassword}
+      - JWT_SECRET=${BOOKING_JWT_SECRET:-fisherel_jwt_secret_key_extremely_secure_key_12345}
+      - FINANCE_SERVICE_URL=${FINANCE_SERVICE_URL:-http://fe-finance-service}
+      - HOUSEKEEPING_SERVICE_URL=${HOUSEKEEPING_SERVICE_URL:-http://fe-housekeeping-service}
     depends_on:
       - booking-db
+      - housekeeping-service
+    healthcheck: *app-healthcheck
     networks:
       - fisherel-network
 
@@ -119,20 +134,21 @@ services:
     container_name: fe-housekeeping-service
     restart: always
     environment:
-      - APP_NAME=Fisher-El-Housekeeping-Service
-      - APP_ENV=local
-      - APP_KEY=base64:zX3+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9b2=
-      - APP_DEBUG=true
+      - APP_NAME=${HOUSEKEEPING_APP_NAME:-Fisher-El-Housekeeping-Service}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${HOUSEKEEPING_APP_KEY:-base64:zX3+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9b2=}
+      - APP_DEBUG=${APP_DEBUG:-false}
       - DB_CONNECTION=mysql
       - DB_HOST=housekeeping-db
       - DB_PORT=3306
-      - DB_DATABASE=fe_housekeeping_db
-      - DB_USERNAME=root
-      - DB_PASSWORD=rootpassword
-      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
-      - BOOKING_SERVICE_URL=http://fe-booking-service
+      - DB_DATABASE=${HOUSEKEEPING_DB_NAME:-fe_housekeeping_db}
+      - DB_USERNAME=${HOUSEKEEPING_DB_USER:-root}
+      - DB_PASSWORD=${HOUSEKEEPING_DB_PASSWORD:-rootpassword}
+      - JWT_SECRET=${HOUSEKEEPING_JWT_SECRET:-fisherel_jwt_secret_key_extremely_secure_key_12345}
+      - BOOKING_SERVICE_URL=${BOOKING_SERVICE_URL:-http://fe-booking-service}
     depends_on:
       - housekeeping-db
+    healthcheck: *app-healthcheck
     networks:
       - fisherel-network
 
@@ -143,19 +159,20 @@ services:
     container_name: fe-finance-service
     restart: always
     environment:
-      - APP_NAME=Fisher-El-Finance-Service
-      - APP_ENV=local
-      - APP_KEY=base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=
-      - APP_DEBUG=true
+      - APP_NAME=${FINANCE_APP_NAME:-Fisher-El-Finance-Service}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${FINANCE_APP_KEY:-base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=}
+      - APP_DEBUG=${APP_DEBUG:-false}
       - DB_CONNECTION=mysql
       - DB_HOST=finance-db
       - DB_PORT=3306
-      - DB_DATABASE=fe_finance_db
-      - DB_USERNAME=root
-      - DB_PASSWORD=rootpassword
-      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+      - DB_DATABASE=${FINANCE_DB_NAME:-fe_finance_db}
+      - DB_USERNAME=${FINANCE_DB_USER:-root}
+      - DB_PASSWORD=${FINANCE_DB_PASSWORD:-rootpassword}
+      - JWT_SECRET=${FINANCE_JWT_SECRET:-fisherel_jwt_secret_key_extremely_secure_key_12345}
     depends_on:
       - finance-db
+    healthcheck: *app-healthcheck
     networks:
       - fisherel-network
 
@@ -176,6 +193,7 @@ services:
       - booking-service
       - housekeeping-service
       - finance-service
+    healthcheck: *app-healthcheck
     networks:
       - fisherel-network
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('housekeeper_id')->nullable();
             $table->string('housekeeper_name')->nullable();
             $table->string('task_description');
-            $table->string('status')->default('Cleaned'); // Cleaned, Maintenance
+            $table->string('status')->default('Cleaned'); // Pending Cleanup, Cleaned, Maintenance
             $table->timestamps();
         });
     }

@@ -8,7 +8,7 @@ This project implements a state-of-the-art hotel management environment tailored
 
 ## 🌟 Premium Features
 *   **Decoupled Microservices:** 4 independent functional microservices + 1 Authentication service, each running in distinct PHP-FPM containers with isolated MySQL databases.
-*   **API Gateway Routing:** Single entry point (`http://localhost:8080`) routed using Nginx to handle request resolution and cross-origin security (CORS).
+*   **API Gateway Routing:** Single entry point (`http://localhost`) routed using Nginx to handle request resolution and cross-origin security (CORS).
 *   **Stateless JWT Security:** Shared token-signature verification across services using standard JSON Web Tokens.
 *   **Dual-Mode Interactive Dashboard:** A gorgeous glassmorphic dark UI representing all actors (Guest, Front Desk, Housekeeper, General Manager) with a localized high-fidelity simulation sandbox (persistent `localStorage`) and live connected API channels.
 
@@ -78,6 +78,12 @@ FisherEl_Hotel/
 
 Follow these steps to run the microservices stack on your local machine using Docker:
 
+> Before starting, copy the example environment file:
+> ```bash
+> cp .env.example .env
+> ```
+> You can edit `.env` to configure local or production secrets.
+>
 ### 1. Build and Launch Containers
 
 **Option A — One-click (Windows):**
@@ -86,25 +92,33 @@ Simply double-click `start-fisherel.bat` in the project root.
 **Option B — Manual:**
 Ensure that Docker Desktop is running, then execute the following command at the root directory of the project:
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 This boots 9 concurrent containers: 4 isolated Laravel applications, 4 MySQL databases, and the Nginx Gateway.
+
+For local development, an optional override file is included automatically by Docker Compose:
+```bash
+docker compose up -d --build
+```
+The `docker-compose.override.yml` file exposes database ports and enables `APP_DEBUG=true` for local testing.
 
 ### 2. Run Database Migrations and Seeding
 Initialize the databases and seed testing accounts inside each active container:
 ```bash
 # 1. Auth Service
-docker-compose exec fe-auth-service php artisan migrate --seed
+docker-compose exec auth-service php artisan migrate --seed
 
 # 2. Booking Service
-docker-compose exec fe-booking-service php artisan migrate --seed
+docker-compose exec booking-service php artisan migrate --seed
 
 # 3. Housekeeping Service
-docker-compose exec fe-housekeeping-service php artisan migrate --seed
+docker-compose exec housekeeping-service php artisan migrate --seed
 
 # 4. Finance Service
-docker-compose exec fe-finance-service php artisan migrate --seed
+docker-compose exec finance-service php artisan migrate --seed
 ```
+
+> **Note:** `docker-compose exec` requires the **service name** (e.g., `auth-service`), not the container name (e.g., `fe-auth-service`). Wait a few seconds after `docker-compose up` before running migrations to allow the MySQL containers to finish initializing.
 
 ### 3. Open the Dashboard
 Simply double-click the `index.html` file in your project directory or serve it locally.
@@ -126,17 +140,17 @@ To perform end-to-end testing, log into the dashboard or toggle user roles using
 
 ## 🐳 Docker Container Reference
 
-| Container Name | Role | Internal Port |
-| :--- | :--- | :--- |
-| `fe-nginx-gateway` | API Gateway (Nginx) | 8080 |
-| `fe-auth-service` | Authentication (Laravel) | 8001 |
-| `fe-booking-service` | Sales & Booking (Laravel) | 8002 |
-| `fe-housekeeping-service` | Housekeeping (Laravel) | 8003 |
-| `fe-finance-service` | Finance & Billing (Laravel) | 8004 |
-| `fe-auth-db` | Auth MySQL Database | 3306 |
-| `fe-booking-db` | Booking MySQL Database | 3306 |
-| `fe-housekeeping-db` | Housekeeping MySQL Database | 3306 |
-| `fe-finance-db` | Finance MySQL Database | 3306 |
+| Service Name | Container Name | Role | Host Port |
+| :--- | :--- | :--- | :--- |
+| `api-gateway` | `fe-api-gateway` | API Gateway (Nginx) | **80** |
+| `auth-service` | `fe-auth-service` | Authentication (Laravel) | — |
+| `booking-service` | `fe-booking-service` | Sales & Booking (Laravel) | — |
+| `housekeeping-service` | `fe-housekeeping-service` | Housekeeping (Laravel) | — |
+| `finance-service` | `fe-finance-service` | Finance & Billing (Laravel) | — |
+| `auth-db` | `fe-auth-db` | Auth MySQL Database | 33061 |
+| `booking-db` | `fe-booking-db` | Booking MySQL Database | 33062 |
+| `housekeeping-db` | `fe-housekeeping-db` | Housekeeping MySQL Database | 33063 |
+| `finance-db` | `fe-finance-db` | Finance MySQL Database | 33064 |
 
 All containers communicate over the `fisherel-network` internal Docker bridge network.
 
@@ -182,3 +196,39 @@ To also remove all database volumes (full reset):
 ```bash
 docker-compose down -v
 ```
+
+---
+
+## 🔧 Troubleshooting
+
+### Container name conflict on startup
+If you see `Conflict. The container name "/fe-<service>" is already in use`, a stale container is still registered. Force-remove it and restart:
+```bash
+docker rm -f <container-name>
+docker-compose up -d
+```
+Or clean up all stopped containers at once:
+```bash
+docker container prune -f
+docker-compose up -d
+```
+
+### `docker-compose down` hangs on `fe-api-gateway`
+Nginx does not respond to the default `SIGTERM` signal sent by Docker. To prevent the 229-second timeout, add these lines to the `api-gateway` service in `docker-compose.yml`:
+```yaml
+  api-gateway:
+    ...
+    stop_signal: SIGQUIT
+    stop_grace_period: 5s
+```
+Alternatively, force-remove the stuck container:
+```bash
+docker rm -f fe-api-gateway
+```
+
+### Migration fails with `getaddrinfo for <service>-db failed`
+This means the database container has not finished initializing yet. Wait 10–15 seconds after `docker-compose up -d --build` completes before running migrations. You can verify all containers are healthy with:
+```bash
+docker-compose ps
+```
+All services should show `Up` before executing `migrate --seed`.
