@@ -99,21 +99,21 @@ services:
     plan: free
     healthCheckPath: /api/health
     envVars:
-      - name: APP_KEY
+      - key: APP_KEY
         value: SET_IN_DASHBOARD
-      - name: DB_CONNECTION
+      - key: DB_CONNECTION
         value: mysql
-      - name: DB_HOST
+      - key: DB_HOST
         value: SET_IN_DASHBOARD
-      - name: DB_PORT
+      - key: DB_PORT
         value: '3306'
-      - name: DB_DATABASE
+      - key: DB_DATABASE
         value: SET_IN_DASHBOARD
-      - name: DB_USERNAME
+      - key: DB_USERNAME
         value: SET_IN_DASHBOARD
-      - name: DB_PASSWORD
+      - key: DB_PASSWORD
         value: SET_IN_DASHBOARD
-      - name: AUTH_SERVICE_URL
+      - key: AUTH_SERVICE_URL
         value: https://auth-service-example.onrender.com
 
 # Note: `staticSites` removed from manifest because the current manifest schema
