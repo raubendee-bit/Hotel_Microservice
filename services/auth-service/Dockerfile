@@ -34,10 +34,10 @@ RUN chmod +x /var/www/html/artisan
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
 # Copy Nginx config for single microservice
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY services/auth-service/docker/nginx.conf /etc/nginx/nginx.conf
 
 # Script to start Nginx & PHP-FPM
-COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY services/auth-service/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
