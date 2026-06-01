@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reception Desk - Front Desk Terminal</title>
+    <!-- Modern Luxury Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #0b0d17;
+            --bg-surface: rgba(22, 28, 45, 0.6);
+            --bg-surface-solid: #161c2d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --gradient-blue: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-gold: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #f3e5ab 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #e2c974;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #06b6d4;
+            --glass-border: rgba(6, 182, 212, 0.15);
+            --shadow-gold: 0 8px 32px 0 rgba(6, 182, 212, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272f44;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0891b2;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-gold);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(6, 182, 212, 0.12);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, .brand-title {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.15);
+            padding-bottom: 10px;
+        }
+
+        /* Luxury Header & Navigation */
+        header {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-crown {
+            color: #06b6d4;
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.4));
+        }
+
+        .brand-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: #06b6d4;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        .logout-btn-hud {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn-hud:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Container Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Dynamic Status HUD */
+        .status-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 24px;
+            background: rgba(22, 28, 45, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* Inputs & Controls */
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+        }
+
+        /* Premium Buttons */
+        .btn-luxury {
+            background: var(--gradient-blue);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25);
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Layout Grid */
+        .info-panel {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            display: grid;
+            margin-top: 20px;
+        }
+
+        /* Table Design */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(39, 47, 68, 0.6);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Action Buttons Grid */
+        .flex-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Alert Pill Status */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 4px 12px;
+        }
+
+        .badge-available { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-occupied { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-dirty { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-maintenance { background: rgba(6, 182, 212, 0.15); color: var(--color-info); border: 1px solid rgba(6, 182, 212, 0.3); }
+        .badge-reserved { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        /* Invoice Modal receipt styles */
+        .invoice-receipt {
+            font-family: 'Outfit', sans-serif;
+            background: #111522;
+            border: 1px dashed var(--accent-gold);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--text-gold);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .receipt-total {
+            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-gold);
+        }
+
+        /* Toast Alert Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 13, 23, 0.95);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        .toast-notification.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+        }
+
+        /* Dialog Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 13, 23, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--bg-surface-solid);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: var(--shadow-gold);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 992px) {
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        // Secure Auth Guard Check
+        if (localStorage.getItem('fe_auth_role') !== 'receptionist') {
+            window.location.href = './index.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Dynamic Luxury Header -->
+    <header>
+        <div class="logo-area" onclick="window.location.href = './index.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-crown logo-crown"></i>
+            <div>
+                <div class="brand-title">Fisher El Hotel</div>
+                <div class="brand-subtitle">Front Desk Portal</div>
+            </div>
+        </div>
+
+        <!-- Connection toggle & logout buttons -->
+        <div style="display: flex; gap: 15px; align-items: center;">
+
+            <button class="logout-btn-hud" onclick="performLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- Master Container -->
+    <div class="main-container">
+
+        <!-- Status HUD bar -->
+        <div class="status-hud">
+            <div class="user-pill">
+                <div class="avatar-ring" id="userAvatar">R</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.95rem;" id="userProfileName">Fisher El Front Desk Terminal</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);" id="userRoleSub">Receptionist • receptionist@fisherel.com</div>
+                </div>
+            </div>
+            <div>
+                <span class="status-pill badge-available" id="jwtStatusText"><i class="fa-solid fa-key"></i> Shared JWT Encoded</span>
+            </div>
+        </div>
+
+        <h2><i class="fa-solid fa-bell-concierge"></i> Reception Front Desk Terminal</h2>
+
+        <div class="info-panel">
+            <!-- Active Bookings Grid -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: #06b6d4;"><i class="fa-solid fa-clipboard-list"></i> Guest Check-In Terminal</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Guest</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receptionBookingsTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Room Grid Allocation Manager -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem; color: #06b6d4;"><i class="fa-solid fa-bed"></i> Chamber Availability Monitor</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Style</th>
+                                <th>Occupancy Status</th>
+                                <th>Bypass Key</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receptionRoomsTable">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Receipt Invoice View Modal -->
+    <div class="modal-overlay" id="invoiceModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('invoiceModal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar"></i> Royal Invoicing Statement</h3>
+            
+            <div id="invoiceModalContent">
+                <!-- Dynamically Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast alert HUD -->
+    <div class="toast-notification" id="toastHUD">
+        <i class="fa-solid fa-envelope-open-text toast-icon"></i>
+        <div>
+            <div style="font-weight: 600; color: var(--accent-gold);" id="toastTitle">System Notification</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);" id="toastMsg">Booking confirmation details dispatched.</div>
+        </div>
+    </div>
+
+    <script>
+        // Core State
+        let isMicroservices = false;
+        const token = localStorage.getItem('fe_auth_token');
+        
+        // Mock DB storage
+        let mockRooms = [];
+        let mockBookings = [];
+        let mockInvoices = [];
+
+        // Boot loader
+        window.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                isMicroservices = true;
+            }
+            refreshAllViews();
+        });
+
+        // Load DB from localStorage
+        function loadLocalMockDB() {
+            mockRooms = JSON.parse(localStorage.getItem('fe_mock_rooms')) || [];
+            mockBookings = JSON.parse(localStorage.getItem('fe_mock_bookings')) || [];
+            mockInvoices = JSON.parse(localStorage.getItem('fe_mock_invoices')) || [];
+        }
+
+        // Load DB from Live API Gateway
+        async function loadLiveMockDB() {
+            try {
+                // Fetch rooms from Live API
+                const roomsResponse = await fetch('/api/bookings/rooms', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!roomsResponse.ok) throw new Error('Failed to fetch rooms');
+                mockRooms = await roomsResponse.json();
+
+                // Fetch bookings from Live API
+                const bookingsResponse = await fetch('/api/bookings/bookings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
+                mockBookings = await bookingsResponse.json();
+
+                // Fetch invoices from Live API
+                const invoicesResponse = await fetch('/api/finance/invoices', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (invoicesResponse.ok) {
+                    mockInvoices = await invoicesResponse.json();
+                }
+            } catch (error) {
+                console.error("Live microservices fetch error, falling back to Local Simulation:", error);
+                isMicroservices = false;
+                updateConnectionBadge();
+                loadLocalMockDB();
+                showToast("Connection Mismatch", "Could not reach live API. Falling back to local offline simulation.");
+            }
+        }
+
+        // Update connection status badge dynamically in the header HUD
+        function updateConnectionBadge() {
+            const badgeTextEl = document.getElementById('jwtStatusText');
+            if (!badgeTextEl) return;
+            const container = badgeTextEl.parentNode;
+            container.innerHTML = '';
+            
+            // JWT Badge
+            const jwtBadge = document.createElement('span');
+            jwtBadge.className = 'status-pill badge-available';
+            jwtBadge.id = 'jwtStatusText';
+            jwtBadge.innerHTML = `<i class="fa-solid fa-key"></i> Shared JWT Encoded`;
+            container.appendChild(jwtBadge);
+
+            // Connection Badge
+            const connBadge = document.createElement('span');
+            connBadge.className = 'status-pill';
+            if (isMicroservices) {
+                connBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                connBadge.style.color = '#10b981';
+                connBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cloud"></i> Live Connected`;
+            } else {
+                connBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                connBadge.style.color = '#f59e0b';
+                connBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                connBadge.style.borderStyle = 'solid';
+                connBadge.style.borderWidth = '1px';
+                connBadge.innerHTML = `<i class="fa-solid fa-cube"></i> Simulation Sandbox`;
+            }
+            container.appendChild(connBadge);
+        }
+
+        // Save DB to localStorage
+        function saveLocalMockDB() {
+            localStorage.setItem('fe_mock_rooms', JSON.stringify(mockRooms));
+            localStorage.setItem('fe_mock_bookings', JSON.stringify(mockBookings));
+            localStorage.setItem('fe_mock_invoices', JSON.stringify(mockInvoices));
+        }
+
+        // Logout Session
+        function performLogout() {
+            localStorage.removeItem('fe_auth_role');
+            localStorage.removeItem('fe_auth_token');
+            localStorage.removeItem('fe_auth_email');
+            localStorage.removeItem('fe_auth_name');
+            window.location.href = './index.html';
+        }
+
+        // Toast alert HUD helper
+        function showToast(title, message) {
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = message;
+            const toast = document.getElementById('toastHUD');
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 4000);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        async function refreshAllViews() {
+            updateConnectionBadge();
+            if (isMicroservices) {
+                await loadLiveMockDB();
+            } else {
+                loadLocalMockDB();
+            }
+            renderReceptionBookings();
+            renderReceptionRooms();
+        }
+
+        // Receptionist: Render Bookings
+        function renderReceptionBookings() {
+            const tbody = document.getElementById('receptionBookingsTable');
+            tbody.innerHTML = '';
+
+            if (mockBookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 20px;">No bookings logged in database.</td></tr>';
+                return;
+            }
+
+            // Show newest bookings first
+            const sorted = [...mockBookings].reverse();
+
+            sorted.forEach(booking => {
+                const room = booking.room || mockRooms.find(r => r.id === booking.room_id) || { room_number: 'N/A' };
+                let badgeClass = 'badge-available';
+                if (booking.status === 'Confirmed') badgeClass = 'badge-available';
+                if (booking.status === 'Cancelled') badgeClass = 'badge-dirty';
+                if (booking.status === 'Completed') badgeClass = 'badge-maintenance';
+                if (booking.status === 'Pending') badgeClass = 'badge-dirty';
+
+                let actionButton = '';
+                if (booking.status === 'Pending') {
+                    actionButton = `
+                        <button class="btn-luxury" style="padding: 6px 12px; font-size: 0.8rem;" onclick="receptionistCheckIn(${booking.id})">
+                            <i class="fa-solid fa-check"></i> Check-In
+                        </button>
+                        <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border-color: rgba(239, 68, 68, 0.2);" onclick="receptionistCancel(${booking.id})">
+                            <i class="fa-solid fa-x"></i> Cancel
+                        </button>
+                    `;
+                } else if (booking.status === 'Confirmed') {
+                    actionButton = `
+                        <button class="btn-luxury" style="padding: 6px 12px; font-size: 0.8rem; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: #fff; box-shadow: none;" onclick="receptionistCheckOut(${booking.id})">
+                            <i class="fa-solid fa-door-open"></i> Check-Out
+                        </button>
+                    `;
+                } else {
+                    actionButton = `<span style="font-size: 0.85rem; color: var(--text-secondary);">Archive Complete</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#FE-${booking.id}</td>
+                        <td>
+                            <strong>${booking.guest_name}</strong><br>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">${booking.guest_email}</span>
+                        </td>
+                        <td>Room ${room.room_number}</td>
+                        <td><span class="status-pill ${badgeClass}">${booking.status}</span></td>
+                        <td><div class="flex-actions">${actionButton}</div></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Receptionist: Render Rooms monitor
+        function renderReceptionRooms() {
+            const tbody = document.getElementById('receptionRoomsTable');
+            tbody.innerHTML = '';
+
+            mockRooms.forEach(room => {
+                let badgeClass = 'badge-available';
+                if (room.status === 'Occupied') badgeClass = 'badge-occupied';
+                if (room.status === 'Dirty') badgeClass = 'badge-dirty';
+                if (room.status === 'Maintenance') badgeClass = 'badge-maintenance';
+                if (room.status === 'Reserved') badgeClass = 'badge-reserved';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>Room ${room.room_number}</strong></td>
+                        <td>${room.style}</td>
+                        <td><span class="status-pill ${badgeClass}">${room.status}</span></td>
+                        <td>
+                            <select class="form-control" style="padding: 4px 10px; font-size: 0.85rem; width:130px;" onchange="updateRoomStatusDirect(${room.id}, this.value)">
+                                <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
+                                <option value="Reserved" ${room.status === 'Reserved' ? 'selected' : ''}>Reserved</option>
+                                <option value="Occupied" ${room.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                <option value="Dirty" ${room.status === 'Dirty' ? 'selected' : ''}>Dirty</option>
+                                <option value="Maintenance" ${room.status === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Receptionist: Directly change room status
+        async function updateRoomStatusDirect(roomId, newStatus) {
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`/api/bookings/rooms/${roomId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Failed to update live room status.');
+                    }
+                    showToast("Chamber Registry Updated", `Room status successfully updated to ${newStatus} via live API.`);
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("API Status Override failed: " + error.message);
+                    refreshAllViews();
+                }
+            } else {
+                const room = mockRooms.find(r => r.id === roomId);
+                room.status = newStatus;
+                saveLocalMockDB();
+                showToast("Chamber Registry Updated", `Room ${room.room_number} set to ${newStatus}.`);
+                refreshAllViews();
+            }
+        }
+
+        // Staff Action: Check-in Guest (Triggers Invoicing)
+        async function receptionistCheckIn(bookingId) {
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`/api/bookings/bookings/${bookingId}/checkin`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Check-in request failed.');
+                    }
+                    const data = await response.json();
+                    showToast(
+                        "Guest Checked In", 
+                        data.message || `Check-in completed successfully via Live API.`
+                    );
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Check-in failed: " + error.message);
+                }
+            } else {
+                const booking = mockBookings.find(b => b.id === bookingId);
+                const room = mockRooms.find(r => r.id === booking.room_id);
+
+                booking.status = 'Confirmed';
+                room.status = 'Occupied';
+
+                // Microservice REST simulation: Notify Finance to initialize Invoice
+                const newInvoice = {
+                    id: Math.floor(4000 + Math.random() * 99),
+                    booking_id: booking.id,
+                    guest_id: booking.guest_id,
+                    guest_name: booking.guest_name,
+                    guest_email: booking.guest_email,
+                    issued_date: new Date().toISOString().substring(0, 10),
+                    subtotal: booking.price_at_booking,
+                    tax: booking.price_at_booking * 0.12,
+                    total_amount: booking.price_at_booking * 1.12,
+                    payment_status: 'Unpaid',
+                    payments: [],
+                    roomCharges: [
+                        { charge_description: "Fisher El Stay Room Booking Fee", amount: booking.price_at_booking }
+                    ]
+                };
+
+                mockInvoices.push(newInvoice);
+                saveLocalMockDB();
+
+                showToast(
+                    "Guest Checked In", 
+                    `Room ${room.room_number} occupied. Invoice #${newInvoice.id} generated and VAT audited.`
+                );
+
+                refreshAllViews();
+            }
+        }
+
+        async function receptionistCancel(bookingId) {
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`/api/bookings/bookings/${bookingId}/cancel`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Cancellation failed.');
+                    }
+                    showToast("Stay Cancelled", `Booking #FE-${bookingId} successfully cancelled.`);
+                    await refreshAllViews();
+                } catch (error) {
+                    alert("Live Cancel failed: " + error.message);
+                }
+            } else {
+                const booking = mockBookings.find(b => b.id === bookingId);
+                booking.status = 'Cancelled';
+                
+                // Mark room back to Available immediately
+                const room = mockRooms.find(r => r.id === booking.room_id);
+                if (room) {
+                    room.status = 'Available';
+                }
+                
+                saveLocalMockDB();
+                showToast("Stay Cancelled", `Booking #FE-${booking.id} cancelled. Room is now Available.`);
+                refreshAllViews();
+            }
+        }
+
+        // Staff Action: Check-out Guest (requires full paid invoice balance)
+        async function receptionistCheckOut(bookingId) {
+            if (isMicroservices) {
+                try {
+                    const response = await fetch(`/api/bookings/bookings/${bookingId}/checkout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Check-out request failed. Balance unpaid.');
+                    }
+                    const data = await response.json();
+                    showToast(
+                        "Check-Out Completed", 
+                        data.message || `Check-out completed successfully via Live API.`
+                    );
+                    await refreshAllViews();
+                } catch (error) {
+                    showToast(
+                        "Check-Out Refused", 
+                        error.message
+                    );
+                    // Open modal for receptionist to view billing receipt details
+                    viewBillingReceipt(bookingId);
+                }
+            } else {
+                const booking = mockBookings.find(b => b.id === bookingId);
+                const invoice = mockInvoices.find(i => i.booking_id === bookingId);
+                const room = mockRooms.find(r => r.id === booking.room_id);
+
+                if (invoice && invoice.payment_status !== 'Paid') {
+                    showToast(
+                        "Check-Out Refused", 
+                        `Outstanding balances exist on Room ${room.room_number}. Settle payment first.`
+                    );
+                    // Directly pop open modal to display invoice to receptionist
+                    viewBillingReceipt(bookingId);
+                    return;
+                }
+
+                booking.status = 'Completed';
+                // Room goes Dirty → triggers housekeeping sanitization queue
+                room.status = 'Dirty';
+
+                // Auto-create a pending housekeeping task log entry
+                const housekeepingLogs = JSON.parse(localStorage.getItem('fe_mock_housekeeping')) || [];
+                housekeepingLogs.unshift({
+                    id: 500 + housekeepingLogs.length,
+                    room_id: room.id,
+                    room_number: room.room_number,
+                    housekeeper_name: 'Pending Assignment',
+                    task_description: `Post-checkout sanitization required — Room ${room.room_number} vacated by ${booking.guest_name}.`,
+                    status: 'Pending Cleanup',
+                    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                });
+                localStorage.setItem('fe_mock_housekeeping', JSON.stringify(housekeepingLogs));
+
+                saveLocalMockDB();
+                showToast(
+                    "Check-Out Completed", 
+                    `Room ${room.room_number} checked out. Housekeeping notified for sanitization.`
+                );
+                refreshAllViews();
+            }
+        }
+
+        // Staff: View billing invoice modal
+        function viewBillingReceipt(bookingId) {
+            const booking = mockBookings.find(b => b.id === bookingId);
+            const invoice = mockInvoices.find(i => i.booking_id === bookingId);
+            const room = booking.room || mockRooms.find(r => r.id === booking.room_id) || { room_number: 'N/A', style: 'N/A' };
+            const modalContent = document.getElementById('invoiceModalContent');
+
+            if (!invoice) {
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; color: var(--color-warning);"></i>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">Invoice has not been generated yet. Please perform front desk check-in first.</p>
+                    </div>
+                `;
+                openModal('invoiceModal');
+                return;
+            }
+
+            let statusClass = 'badge-dirty';
+            if (invoice.payment_status === 'Paid') statusClass = 'badge-available';
+
+            let chargesHtml = '';
+            const roomCharges = invoice.room_charges || invoice.roomCharges || [];
+            roomCharges.forEach(charge => {
+                chargesHtml += `
+                    <div class="receipt-row">
+                        <span>• ${charge.charge_description}</span>
+                        <span>₱${Number(charge.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            modalContent.innerHTML = `
+                <div class="invoice-receipt">
+                    <div class="receipt-header">
+                        <i class="fa-solid fa-crown logo-crown" style="font-size: 1.8rem; margin-bottom: 5px;"></i>
+                        <div class="receipt-title">Fisher El Hotel Corp.</div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Lacson St, Bacolod City, Philippines</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Invoice #${invoice.id} • Booking #FE-${booking.id}</div>
+                    </div>
+                    
+                    <div class="receipt-row" style="margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">GUEST BILLING DETAIL:</div>
+                            <div style="font-weight: 600;">${invoice.guest_name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${invoice.guest_email}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">CHAMBER ASSIGNED:</div>
+                            <div style="font-weight: 600;">Room ${room.room_number} (${room.style})</div>
+                            <span class="status-pill ${statusClass}" style="margin-top: 5px;">${invoice.payment_status}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">AUDITED ACCOUNT CHARGES:</div>
+                        ${chargesHtml}
+                    </div>
+
+                    <div class="receipt-total">
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0;">
+                            <span>Subtotal</span>
+                            <span>₱${Number(invoice.subtotal).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row" style="font-size: 0.95rem; font-weight: normal; color: var(--text-secondary); border-top: none; margin-top:0; padding-top:0; margin-bottom: 15px;">
+                            <span>Gov VAT (12%)</span>
+                            <span>₱${Number(invoice.tax).toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>TOTAL AMOUNT DUE</span>
+                            <span>₱${Number(invoice.total_amount).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                ${invoice.payment_status === 'Unpaid' ? `
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; text-align: center; color: var(--color-warning);">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <p style="font-size: 0.85rem; margin-top: 5px; font-weight: 500;">
+                            This invoice is currently <strong>UNPAID</strong>.<br>
+                            Please direct the guest to the <strong>Billing Coordinator</strong> or the <strong>General Manager</strong> terminal to settle payment before check-out.
+                        </p>
+                    </div>
+                ` : ''}
+            `;
+            openModal('invoiceModal');
+        }
+    </script>
+</body>
+</html>

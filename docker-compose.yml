@@ -1,0 +1,186 @@
+networks:
+  fisherel-network:
+    driver: bridge
+
+services:
+  # =========================================================================
+  # 1. DATABASE CONTAINERS (Isolated per microservice)
+  # =========================================================================
+  auth-db:
+    image: mysql:8.0
+    container_name: fe-auth-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: fe_auth_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "33061:3306"
+    volumes:
+      - auth_db_data:/var/lib/mysql
+    networks:
+      - fisherel-network
+
+  booking-db:
+    image: mysql:8.0
+    container_name: fe-booking-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: fe_booking_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "33062:3306"
+    volumes:
+      - booking_db_data:/var/lib/mysql
+    networks:
+      - fisherel-network
+
+  housekeeping-db:
+    image: mysql:8.0
+    container_name: fe-housekeeping-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: fe_housekeeping_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "33063:3306"
+    volumes:
+      - housekeeping_db_data:/var/lib/mysql
+    networks:
+      - fisherel-network
+
+  finance-db:
+    image: mysql:8.0
+    container_name: fe-finance-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: fe_finance_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "33064:3306"
+    volumes:
+      - finance_db_data:/var/lib/mysql
+    networks:
+      - fisherel-network
+
+  # =========================================================================
+  # 2. APPLICATION SERVICES (Laravel-based)
+  # =========================================================================
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: fe-auth-service
+    restart: always
+    environment:
+      - APP_NAME=Fisher-El-Auth-Service
+      - APP_ENV=local
+      - APP_KEY=base64:fH7+9uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9z0=
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=auth-db
+      - DB_PORT=3306
+      - DB_DATABASE=fe_auth_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
+      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+    depends_on:
+      - auth-db
+    networks:
+      - fisherel-network
+
+  booking-service:
+    build:
+      context: ./services/booking-service
+      dockerfile: Dockerfile
+    container_name: fe-booking-service
+    restart: always
+    environment:
+      - APP_NAME=Fisher-El-Booking-Service
+      - APP_ENV=local
+      - APP_KEY=base64:qW8+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9a1=
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=booking-db
+      - DB_PORT=3306
+      - DB_DATABASE=fe_booking_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
+      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+      - FINANCE_SERVICE_URL=http://fe-finance-service
+    depends_on:
+      - booking-db
+    networks:
+      - fisherel-network
+
+  housekeeping-service:
+    build:
+      context: ./services/housekeeping-service
+      dockerfile: Dockerfile
+    container_name: fe-housekeeping-service
+    restart: always
+    environment:
+      - APP_NAME=Fisher-El-Housekeeping-Service
+      - APP_ENV=local
+      - APP_KEY=base64:zX3+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9b2=
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=housekeeping-db
+      - DB_PORT=3306
+      - DB_DATABASE=fe_housekeeping_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
+      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+      - BOOKING_SERVICE_URL=http://fe-booking-service
+    depends_on:
+      - housekeeping-db
+    networks:
+      - fisherel-network
+
+  finance-service:
+    build:
+      context: ./services/finance-service
+      dockerfile: Dockerfile
+    container_name: fe-finance-service
+    restart: always
+    environment:
+      - APP_NAME=Fisher-El-Finance-Service
+      - APP_ENV=local
+      - APP_KEY=base64:cN4+5uO5Yl6sC3/lWq5iU/0j1t2r3s4e5v6w7x8y9c3=
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=finance-db
+      - DB_PORT=3306
+      - DB_DATABASE=fe_finance_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
+      - JWT_SECRET=fisherel_jwt_secret_key_extremely_secure_key_12345
+    depends_on:
+      - finance-db
+    networks:
+      - fisherel-network
+
+  # =========================================================================
+  # 3. API GATEWAY ROUTER (Proxy Entrypoint)
+  # =========================================================================
+  api-gateway:
+    image: nginx:alpine
+    container_name: fe-api-gateway
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - .:/usr/share/nginx/html:ro
+    depends_on:
+      - auth-service
+      - booking-service
+      - housekeeping-service
+      - finance-service
+    networks:
+      - fisherel-network
+
+volumes:
+  auth_db_data:
+  booking_db_data:
+  housekeeping_db_data:
+  finance_db_data:

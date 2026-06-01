@@ -1,0 +1,38 @@
+{
+    "name": "lfisher/finance-service",
+    "type": "project",
+    "description": "L'Fisher Hotel Finance Service",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0",
+        "firebase/php-jwt": "^6.10"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        },
+        "audit": {
+            "ignore": {
+                "PKSA-y2cr-5h3j-g3ys": "JWT used for internal inter-service auth only"
+            }
+        }
+    }
+}

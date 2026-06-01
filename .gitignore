@@ -1,0 +1,31 @@
+# OS & editor artefacts
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+
+# Node / npm / Yarn artefacts (if you ever add them)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker artefacts
+docker-compose.override.yml
+.env
+docker-compose.yml  # keep if you want it version‑controlled; otherwise uncomment
+
+# Laravel / PHP artefacts (service side)
+vendor/
+storage/
+bootstrap/cache/
+.phpunit.result.cache
+/.idea
+/.vscode
+
+# Built assets (not needed for source‑only repo)
+*.zip
+*.tar.gz
+
+# Local mock DB files (if you ever dump them)
+lf_mock_*.json
